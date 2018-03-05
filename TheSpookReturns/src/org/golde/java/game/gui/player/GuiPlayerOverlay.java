@@ -104,6 +104,10 @@ public class GuiPlayerOverlay extends Gui{
 
 	}
 	
+	@Override
+	public int getZIndex() {
+		return 3;
+	}
 	
 
 }

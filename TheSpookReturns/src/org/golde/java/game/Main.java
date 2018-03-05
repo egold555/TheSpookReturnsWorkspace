@@ -1,19 +1,20 @@
 package org.golde.java.game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
 
 import org.golde.java.game.audio.AudioMaster;
 import org.golde.java.game.audio.Source;
 import org.golde.java.game.common.packets.player.PacketUpdatePlayerLocation;
-import org.golde.java.game.console.CommandHandler;
+import org.golde.java.game.console.ConsoleThread;
 import org.golde.java.game.font.FontType;
 import org.golde.java.game.gui.base.Gui;
 import org.golde.java.game.gui.base.GuiText;
 import org.golde.java.game.gui.mainMenu.GuiMainMenu;
 import org.golde.java.game.gui.mainMenu.GuiOptions;
 import org.golde.java.game.gui.player.GuiDebug;
+import org.golde.java.game.gui.player.GuiFade;
 import org.golde.java.game.helpers.BlankLogger;
 import org.golde.java.game.multiplayer.MPlayer;
 import org.golde.java.game.multiplayer.Multiplayer;
@@ -27,6 +28,7 @@ import org.golde.java.game.objects.light.Light;
 import org.golde.java.game.objects.player.Camera;
 import org.golde.java.game.objects.player.EntityPlayer;
 import org.golde.java.game.objects.terrain.decoration.EntityFirepit;
+import org.golde.java.game.objects.terrain.decoration.EntityMagicCircle;
 import org.golde.java.game.objects.terrain.decoration.EntityOilDrum;
 import org.golde.java.game.objects.terrain.decoration.EntityPiano;
 import org.golde.java.game.objects.terrain.decoration.EntityPiano.EnumSongs;
@@ -46,6 +48,7 @@ import org.golde.java.game.terrains.Terrain;
 import org.golde.java.game.textures.particles.ParticleTexture;
 import org.golde.java.game.textures.terrain.TerrainTexture;
 import org.golde.java.game.textures.terrain.TerrainTexturePack;
+import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.openal.AL10;
@@ -88,35 +91,35 @@ public class Main {
 	{
 		return entities;
 	}
-	
+
 	public static Camera getCamera() {
 		return camera;
 	}
-	
+
 	public static MasterRenderer getRenderer() {
 		return renderer;
 	}
-	
+
 	public static List<Light> getLights() {
 		return lights;
 	}
-	
+
 	public static GameState getGameState() {
 		return gameState;
 	}
-	
+
 	public static void setGameState(GameState gameState) {
 		Main.gameState = gameState;
 	}
-	
+
 	public static FontType getFont() {
 		return FONT;
 	}
-	
+
 	public static EntityPlayer getPlayer() {
 		return player;
 	}
-	
+
 	public static Multiplayer getMultiplayer() {
 		return multiplayer;
 	}
@@ -143,7 +146,7 @@ public class Main {
 	}
 	//End
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws LWJGLException {
 		//**********Basic Setup***************
 		DisplayManager.createDisplay();
 		loader = new Loader();
@@ -153,18 +156,20 @@ public class Main {
 		renderer = new MasterRenderer(loader);
 
 		Log.setLogSystem(new BlankLogger()); //Stop SlickUtil from logging pointless errors
-		
+
 		AudioMaster.init();
 		AL10.alDistanceModel(AL11.AL_LINEAR_DISTANCE);
 
 		ParticleMaster.init(loader, renderer.getProjectionMatrix());
 
 		//**********PLAYER***********
-		player = new EntityPlayer(loader, new Vector3f(0, 3, -34), 181.7f, 4, 0, 1);
+		GuiFade guiFade = new GuiFade(loader);
+		guis.add(guiFade);
+		player = new EntityPlayer(loader, new Vector3f(0, 3, -34), 181.7f, 4, 0, 1, guiFade);
 		camera = new Camera(player, renderer.getProjectionMatrix());
 		entities.add(player);
 		//***************************
-		
+
 		multiplayer = new Multiplayer();
 
 		RainMaker rainParticles = new RainMaker(new ParticleTexture(loader.loadTexture("particles/cosmic"), 4), 0.5f, 1000, 150, 5, 200, 100, -10);
@@ -208,9 +213,12 @@ public class Main {
 
 		guis.add(player.getGuiOverlay());
 		player.getGuiOverlay().setVisible(false);
+
+
+
 		//*********************
 
-		
+
 
 		entities.add(new EntityTree(loader, 90, 90, terrain1, 10f));
 
@@ -219,7 +227,7 @@ public class Main {
 		//entities.add(new EntityChurch(loader, 300, 300, terrain1, 40));
 		entities.add(new EntityFarmHouse(loader, 0, 0, terrain1, 2));
 		entities.add(new EntityPiano(loader, 40, 40, terrain1, 2.5f, EnumSongs._RANDOM));
-		
+
 		entities.add(new EntityDog(loader, 1, -50, 50, terrain1, 0.1f));
 		//entities.add(new EntityDog(loader, 2, -50, 60, terrain1, 0.1f));
 		//entities.add(new EntityDog(loader, 3, -50, 70, terrain1, 0.1f));
@@ -229,9 +237,17 @@ public class Main {
 		entities.add(new EntityFirepit(loader, -60, 60, terrain1, 1));
 		entities.add(new EntityOilDrum(loader, 0, 80, terrain1, 10));
 
-		
+		entities.add(new EntityMagicCircle(loader, 0, -100, terrain1, 10));
+
 		//entities.add(new EntityTV(loader, 50, -50, terrain1, 0.8f)); // 0.8f
 		entities.add(new EntityTV(loader, 50, -50, terrain1, 0.8f, "Kali.avi")); // 0.8f Wrecked VHS.mp4
+
+
+		//Sort all registered Guis by Z index
+		Collections.sort(guis);
+		
+		//new ConsoleThread().start();
+
 		//Final
 		DisplayManager.aboutToStartGameLoop();
 
@@ -248,9 +264,9 @@ public class Main {
 
 			scheduler.update();
 			camera.movement();
-			
+
 			for(MPlayer mplayer : multiplayer.getPlayers()) {
-				
+
 				if(mplayer.entity == null) {
 					mplayer.entity = new EntityTree(loader, mplayer.x, mplayer.z, terrain1, 10);
 					GLog.info("Added Entity to mplayer.entity (" + mplayer.id + "");
@@ -258,11 +274,11 @@ public class Main {
 				mplayer.entity.setPosition(mplayer.x, mplayer.y, mplayer.z);
 				//mplayer.entity.setRotation(mplayer.rx, mplayer.ry, mplayer.rz);
 			}
-			
+
 			if(gameState == GameState.PLAYING && player != null && multiplayer.isConnected()) {
 				sendPlayerPosition();
 			}
-			
+
 
 			ParticleMaster.update(camera);
 
@@ -282,10 +298,10 @@ public class Main {
 					}
 				}
 			}
-			
-			
 
-			
+
+
+
 
 			AudioMaster.setListenerData(camera);
 
@@ -296,7 +312,7 @@ public class Main {
 			for(Entity entity:entities) {
 				renderer.processEntity(entity);
 			}
-			
+
 			for(MPlayer mplayer : multiplayer.getPlayers()) {
 				renderer.processEntity(mplayer.entity);
 			}
@@ -305,7 +321,7 @@ public class Main {
 				source.tick();
 			}
 
-			rainParticles.generateParticles(player.getPosition().x, player.getPosition().z);
+			//rainParticles.generateParticles(player.getPosition().x, player.getPosition().z);
 
 			//Game renderer
 
@@ -315,13 +331,13 @@ public class Main {
 
 
 			//render last
-			
+
 
 			ParticleMaster.renderParticles(camera);
 
 			guiRenderer.render(guis);
 			for(Gui gui:guis) {
-				if(gui.isVisible()) {
+				if(gui.isVisible()) { //Need to find a way to find all overlayed guis, and if the z index is over, then remove the text
 					for(GuiText text:gui.getTextsToBeRendered()) {
 						TextMaster.loadText(text);
 					}
@@ -331,13 +347,12 @@ public class Main {
 					}
 				}
 			}
-			
+
 			//Random keyboard stuff
 			if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-				GLog.info("Exited Game");
-				System.exit(0);
+				exit();
 			}
-			
+
 			DisplayManager.updateDisplay();
 		}
 
@@ -359,6 +374,7 @@ public class Main {
 	}
 
 	public static void exit() {
+		GLog.info("Exited Game");
 		ParticleMaster.cleanUp();
 		AudioMaster.cleanUp();
 		TextMaster.cleanUp();
@@ -368,11 +384,11 @@ public class Main {
 
 
 		DisplayManager.closeDisplay();
-
+		System.exit(0);
 	}
 
 	//Called when ever you set the state
-	static void initState(GameState state) {
+	static void initState(GameState state) throws LWJGLException {
 		GLog.info("Switched Game State: " + state.name());
 
 		if(state == GameState.TITLE_SCREEN) {
@@ -397,7 +413,7 @@ public class Main {
 			guiMainMenu.setVisible(false);
 			guiOptions.setVisible(false);
 			player.getGuiOverlay().setVisible(true);
-			Mouse.setGrabbed(true);
+			if(Display.isActive()) {Mouse.setGrabbed(true);}
 			if(rainSound == null) {
 				rainSound = new Source();
 				rainSound.setPosition(0, 0, 0);
@@ -407,22 +423,7 @@ public class Main {
 
 		}
 	}
-
-	static class ConsoleRunnable implements Runnable{
-
-		Scanner scan = new Scanner(System.in);
-		public void run()
-		{
-			try {
-				String result = scan.nextLine();
-				CommandHandler.onCommand(Main.player, result);
-			}
-			catch (Exception e) {
-				GLog.error(e, "Failed to start console thread!");
-			}
-
-		}
-
-	}
+	
+	
 
 }

@@ -6,7 +6,7 @@ import java.util.List;
 import org.golde.java.game.gui.base.button.Button;
 import org.golde.java.game.textures.gui.GuiStaticTexture;
 
-public class Gui {
+public class Gui implements Comparable<Gui>{
 
 	private boolean visible = true;
 	public List<GuiStaticTexture> guiStaticTextures = new ArrayList<GuiStaticTexture>();
@@ -58,6 +58,15 @@ public class Gui {
 
 	public void addButton(Button button) {
 		this.buttons.add(button);
+	}
+	
+	public int getZIndex() {
+		return 0;
+	}
+
+	@Override
+	public int compareTo(Gui o) {
+		return this.getZIndex() - o.getZIndex();
 	}
 	
 }
