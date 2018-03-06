@@ -11,5 +11,12 @@ public class TerrainTexture {
 	public int getTextureId() {
 		return textureId;
 	}
+
+	@Override
+	public String toString() {
+		return "TerrainTexture [textureId=" + textureId + "]";
+	}
+	
+	
 	
 }

@@ -1,5 +1,7 @@
 package org.golde.java.game.terrains;
 
+import java.util.Arrays;
+
 import org.golde.java.game.models.RawModel;
 import org.golde.java.game.renderEngine.Loader;
 import org.golde.java.game.textures.terrain.TerrainTexture;
@@ -65,5 +67,13 @@ public class FlatTerrain extends Terrain{
 		}
 		return loader.loadToVAO(vertices, textureCoords, normals, indices);
 	}
+
+	@Override
+	public String toString() {
+		return "FlatTerrain [SIZE=" + SIZE + ", px=" + px + ", pz=" + pz + ", model=" + model + ", texturePack="
+				+ texturePack + ", blendMap=" + blendMap + "]";
+	}
+	
+	
 	
 }

@@ -374,17 +374,27 @@ public class Main {
 	}
 
 	public static void exit() {
-		GLog.info("Exited Game");
+		GLog.info("Exiting Game");
 		ParticleMaster.cleanUp();
+		GLog.info("Cleanup: ParticleMaster");
+		
 		AudioMaster.cleanUp();
+		GLog.info("Cleanup: AudioMaster");
+		
 		TextMaster.cleanUp();
+		GLog.info("Cleanup: TextMaster");
+		
 		guiRenderer.cleanUp();
+		GLog.info("Cleanup: guiRenderer");
+		
 		renderer.cleanUp();
+		GLog.info("Cleanup: renderer");
+		
 		loader.cleanUp();
-
+		GLog.info("Cleanup: loader");
 
 		DisplayManager.closeDisplay();
-		System.exit(0);
+		
 	}
 
 	//Called when ever you set the state

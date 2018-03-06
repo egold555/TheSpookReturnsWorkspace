@@ -113,4 +113,12 @@ public class BoxCollider extends Collider{
 		return endPoint.y;
 	}
 
+	@Override
+	public String toString() {
+		return "BoxCollider [startPoint=" + startPoint + ", endPoint=" + endPoint + ", blocks=" + blocks + ", getTop()="
+				+ getTop() + "]";
+	}
+	
+	
+
 }
