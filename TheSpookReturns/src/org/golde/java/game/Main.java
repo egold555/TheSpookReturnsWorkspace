@@ -7,7 +7,6 @@ import java.util.List;
 import org.golde.java.game.audio.AudioMaster;
 import org.golde.java.game.audio.Source;
 import org.golde.java.game.common.packets.player.PacketUpdatePlayerLocation;
-import org.golde.java.game.console.ConsoleThread;
 import org.golde.java.game.font.FontType;
 import org.golde.java.game.gui.base.Gui;
 import org.golde.java.game.gui.base.GuiText;
@@ -234,6 +233,7 @@ public class Main {
 		lights.add(new Light(new Vector3f(2000, 2000, 0), new Vector3f(0.2f, 0.2f, 0.2f))); //Sun
 		entities.add(new EntityLamp(loader, 100, 10, terrain1, 1)); //.setAttenuation(0.5f, 0.003f, 0.0005f).setSpotLight(new Vector3f(-1, -0.1F, -0.15F), 10, 30)
 		entities.add(new EntityLamp(loader, -100, 10, terrain1, 1).setColor(new Vector3f(2, 0, 0)));
+		
 		entities.add(new EntityFirepit(loader, -60, 60, terrain1, 1));
 		entities.add(new EntityOilDrum(loader, 0, 80, terrain1, 10));
 
