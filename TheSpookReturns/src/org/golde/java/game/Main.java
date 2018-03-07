@@ -173,7 +173,6 @@ public class Main {
 
 		RainMaker rainParticles = new RainMaker(new ParticleTexture(loader.loadTexture("particles/cosmic"), 4), 0.5f, 1000, 150, 5, 200, 100, -10);
 
-
 		//********TERRAIN TEXTURE STUFF*******
 
 		TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("terrain/grass"));

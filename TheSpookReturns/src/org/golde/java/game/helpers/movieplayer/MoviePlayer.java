@@ -35,7 +35,7 @@ public class MoviePlayer {
 	public MoviePlayer(String movieFile) throws IOException {
 		this(new File("res/movies/" + movieFile));
 	}
-	
+
 	public MoviePlayer(File movieFile) throws IOException {
 		this.movieFile = movieFile;
 
@@ -60,7 +60,7 @@ public class MoviePlayer {
 
 	private void init() {
 		initAudio();
-		
+
 		// create texture holding video frame
 		textureHandle = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, textureHandle);
@@ -78,10 +78,10 @@ public class MoviePlayer {
 			glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, movie.width() * movie.height() * 3, GL_STREAM_DRAW_ARB);
 			glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 		}
-		
+
 		resetting = false;
 	}
-	
+
 	private void initAudio()
 	{
 		audioRenderer = new OpenALAudioRenderer();
@@ -96,20 +96,21 @@ public class MoviePlayer {
 		position = pos;
 		audioRenderer.setPosition(pos);
 	}
-	
+
 	public void relativeSeek(int seconds) throws IOException {
 		seconds = offsetInSeconds + (int) movie.getPlayingTime() + seconds;
 		this.absoluteSeek(Math.max(0, seconds));
 	}
-	
+
 	public void resetToBeginning()
 	{
 		resetting = true;
 		new Thread() {
 			public void run() {
 				try {
+					Thread.sleep(100);
 					absoluteSeek(0);
-				} catch (IOException e) {}
+				} catch (IOException | InterruptedException e) {e.printStackTrace();}
 			}
 		}.start();
 	}
@@ -133,13 +134,12 @@ public class MoviePlayer {
 				init();
 			}
 		});
-		
+
 	}
 
 	public void tick() {
 		if (resetting)
 			return;
-		
 		audioRenderer.tick(movie);
 	}
 
@@ -182,6 +182,11 @@ public class MoviePlayer {
 
 		ByteBuffer texBuffer = null;
 
+		if(movie == null) {
+			GLog.warning("Movie is null. This shoulden't happen, but I will attempt to fix it by returning false!");
+			return false;
+		}
+		
 		if (movie.isTimeForNextFrame()) {
 			int framesRead = 0;
 			do {
@@ -206,31 +211,37 @@ public class MoviePlayer {
 			} while (movie.hasVideoBacklogOver(maxFramesBacklog));
 
 			if (framesRead > 1) {
-				GLog.info("video frames skipped: " + (framesRead - 1));
+				GLog.warning("video frames skipped: " + (framesRead - 1));
 			}
 
-			{
-				long tStart = System.nanoTime();
 
-				if (usePBO()) {
-					glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pboHandle);
+			long tStart = System.nanoTime();
 
-					ByteBuffer mapped = glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB, movie.width() * movie.height() * 3, null);
-					mapped.put(texBuffer);
-					glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
-					
+			if (usePBO()) {
+				glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pboHandle);
+
+				ByteBuffer mapped = glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB, movie.width() * movie.height() * 3, null);
+				mapped.put(texBuffer);
+				glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+
+				if(movie != null) {
 					glTexSubImage2D(GL_TEXTURE_2D, 0/* level */, 0, 0, movie.width(), movie.height(), GL_RGB, GL_UNSIGNED_BYTE, 0);
-
-					glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 				} else {
-					glTexSubImage2D(GL_TEXTURE_2D, 0/* level */, 0, 0, movie.width(), movie.height(), GL_RGB, GL_UNSIGNED_BYTE, texBuffer);
+					GLog.warning("Its null, skipping glTexSubImage2D");
 				}
+				
 
-				textureUpdateTook.add(System.nanoTime() - tStart);
-
-				movie.videoStream().freeFrameData(texBuffer);
-				texBuffer = null;
+				glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+			} 
+			else {
+				glTexSubImage2D(GL_TEXTURE_2D, 0/* level */, 0, 0, movie.width(), movie.height(), GL_RGB, GL_UNSIGNED_BYTE, texBuffer);
 			}
+
+			textureUpdateTook.add(System.nanoTime() - tStart);
+
+			movie.videoStream().freeFrameData(texBuffer);
+			texBuffer = null;
+
 
 			// signal the AV-sync that we processed a frame
 			movie.onUpdatedVideoFrame();
