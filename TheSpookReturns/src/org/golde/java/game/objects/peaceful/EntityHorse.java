@@ -8,9 +8,9 @@ import org.golde.java.game.terrains.Terrain;
 import org.golde.java.game.textures.model.ModelTexture;
 import org.lwjgl.util.vector.Vector3f;
 
-public class EntityCat extends EntityMoveable{
+public class EntityHorse extends EntityMoveable{
 
-	public EntityCat(Loader loader, float x, float z, Terrain terrain, float scale) {
+	public EntityHorse(Loader loader, float x, float z, Terrain terrain, float scale) {
 		super(getModel(loader), new Vector3f(x, terrain.getHeightOfTerrain(x, z) + 10, z), 0, 0, 0, scale);
 		
 		/*this.addBehavior(new BehaviorLookAtPlayer(3000));
@@ -26,7 +26,7 @@ public class EntityCat extends EntityMoveable{
 	static TexturedModel getModel(Loader loader)
 	{
 		if (model == null) {
-			model = new TexturedModel(OBJLoader.loadObjectModel("models/cat", loader), new ModelTexture(loader.loadTexture("models/cat")));
+			model = new TexturedModel(OBJLoader.loadObjectModel("models/horse", loader), new ModelTexture(loader.loadTexture("models/horse")));
 		}
 		return model;
 	}

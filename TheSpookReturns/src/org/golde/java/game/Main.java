@@ -25,6 +25,7 @@ import org.golde.java.game.objects.enemy.EntitySlasher;
 import org.golde.java.game.objects.light.EntityLamp;
 import org.golde.java.game.objects.light.Light;
 import org.golde.java.game.objects.peaceful.EntityCat;
+import org.golde.java.game.objects.peaceful.EntityHorse;
 import org.golde.java.game.objects.player.Camera;
 import org.golde.java.game.objects.player.EntityPlayer;
 import org.golde.java.game.objects.terrain.decoration.EntityFirepit;
@@ -230,7 +231,8 @@ public class Main {
 		entities.add(new EntityPiano(loader, 40, 40, terrain1, 2.5f, EnumSongs._RANDOM));
 
 		entities.add(new EntityDog(loader, 1, -50, 50, terrain1, 0.1f));
-		entities.add(new EntityCat(loader, -50, 40, terrain1, 10));
+		entities.add(new EntityCat(loader, 60, 40, terrain1, 10));
+		entities.add(new EntityHorse(loader, 70, 40, terrain1, 0.1f));
 
 		lights.add(new Light(new Vector3f(2000, 2000, 0), new Vector3f(0.2f, 0.2f, 0.2f))); //Sun
 		entities.add(new EntityLamp(loader, 100, 10, terrain1, 1)); //.setAttenuation(0.5f, 0.003f, 0.0005f).setSpotLight(new Vector3f(-1, -0.1F, -0.15F), 10, 30)
@@ -241,7 +243,7 @@ public class Main {
 
 		entities.add(new EntityMagicCircle(loader, 0, -100, terrain1, 10));
 
-		entities.add(new EntityTV(loader, 50, -50, terrain1, 0.8f, "Kali.avi")); // 0.8f Wrecked VHS.mp4
+		entities.add(new EntityTV(loader, 50, -50, terrain1, 0.8f, "Noice.mp4")); // 0.8f Wrecked VHS.mp4
 
 
 
