@@ -4,6 +4,7 @@ import org.golde.java.game.Main;
 import org.golde.java.game.models.TexturedModel;
 import org.golde.java.game.objects.base.colliders.CylinderCollider;
 import org.golde.java.game.objects.base.entities.Entity;
+import org.golde.java.game.objects.base.entities.EntityMoveable;
 import org.golde.java.game.objects.light.Light;
 import org.golde.java.game.objects.player.EntityPlayer;
 import org.golde.java.game.renderEngine.Loader;
@@ -62,8 +63,8 @@ public class EntityMagicCircle extends Entity {
 	@Override
 	public void onCollision(Entity collidedWith) {
 		
-		if(collidedWith instanceof EntityPlayer) {
-			((EntityPlayer)collidedWith).addVelocity(0, 5, 0);
+		if(collidedWith instanceof EntityMoveable) {
+			((EntityMoveable)collidedWith).addVelocity(0, 5, 0);
 		}
 		super.onCollision(collidedWith);
 	}

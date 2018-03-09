@@ -24,6 +24,8 @@ import org.golde.java.game.objects.enemy.EntitySkeleton;
 import org.golde.java.game.objects.enemy.EntitySlasher;
 import org.golde.java.game.objects.light.EntityLamp;
 import org.golde.java.game.objects.light.Light;
+import org.golde.java.game.objects.peaceful.EntityCat;
+import org.golde.java.game.objects.peaceful.EntityFloatingTextTest;
 import org.golde.java.game.objects.player.Camera;
 import org.golde.java.game.objects.player.EntityPlayer;
 import org.golde.java.game.objects.terrain.decoration.EntityFirepit;
@@ -33,6 +35,7 @@ import org.golde.java.game.objects.terrain.decoration.EntityPiano;
 import org.golde.java.game.objects.terrain.decoration.EntityPiano.EnumSongs;
 import org.golde.java.game.objects.terrain.decoration.EntityTV;
 import org.golde.java.game.objects.terrain.plants.EntityTree;
+import org.golde.java.game.objects.terrain.structures.EntityChurch;
 import org.golde.java.game.objects.terrain.structures.EntityFarmHouse;
 import org.golde.java.game.renderEngine.DisplayManager;
 import org.golde.java.game.renderEngine.Loader;
@@ -53,6 +56,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.util.Log;
 
@@ -216,19 +220,20 @@ public class Main {
 
 		//*********************
 
+		
 
 
 		entities.add(new EntityTree(loader, 90, 90, terrain1, 10f));
 
 		entities.add(new EntitySkeleton(loader, 100, 100, terrain1, 1f));
 		entities.add(new EntitySlasher(loader, 40, 0, terrain1, 10));
-		//entities.add(new EntityChurch(loader, 300, 300, terrain1, 40));
+		entities.add(new EntityChurch(loader, 300, 300, terrain1, 40));
 		entities.add(new EntityFarmHouse(loader, 0, 0, terrain1, 2));
 		entities.add(new EntityPiano(loader, 40, 40, terrain1, 2.5f, EnumSongs._RANDOM));
 
 		entities.add(new EntityDog(loader, 1, -50, 50, terrain1, 0.1f));
-		//entities.add(new EntityDog(loader, 2, -50, 60, terrain1, 0.1f));
-		//entities.add(new EntityDog(loader, 3, -50, 70, terrain1, 0.1f));
+		entities.add(new EntityCat(loader, -50, 40, terrain1, 10));
+
 		lights.add(new Light(new Vector3f(2000, 2000, 0), new Vector3f(0.2f, 0.2f, 0.2f))); //Sun
 		entities.add(new EntityLamp(loader, 100, 10, terrain1, 1)); //.setAttenuation(0.5f, 0.003f, 0.0005f).setSpotLight(new Vector3f(-1, -0.1F, -0.15F), 10, 30)
 		entities.add(new EntityLamp(loader, -100, 10, terrain1, 1).setColor(new Vector3f(2, 0, 0)));
@@ -238,8 +243,9 @@ public class Main {
 
 		entities.add(new EntityMagicCircle(loader, 0, -100, terrain1, 10));
 
-		//entities.add(new EntityTV(loader, 50, -50, terrain1, 0.8f)); // 0.8f
 		entities.add(new EntityTV(loader, 50, -50, terrain1, 0.8f, "Kali.avi")); // 0.8f Wrecked VHS.mp4
+		
+		entities.add(new EntityFloatingTextTest(loader, 50, 10, -55));
 
 
 		//Sort all registered Guis by Z index
@@ -422,7 +428,7 @@ public class Main {
 			guiMainMenu.setVisible(false);
 			guiOptions.setVisible(false);
 			player.getGuiOverlay().setVisible(true);
-			if(Display.isActive()) {Mouse.setGrabbed(true);}
+			Mouse.setGrabbed(true);
 			if(rainSound == null) {
 				rainSound = new Source();
 				rainSound.setPosition(0, 0, 0);

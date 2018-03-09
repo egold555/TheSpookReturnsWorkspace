@@ -84,6 +84,10 @@ public class MoviePlayer {
 
 	private void initAudio()
 	{
+		if(movie == null) {
+			GLog.warning("Initing audio with a null movie. Attempting to return to prevent further errors.");
+			return;
+		}
 		audioRenderer = new OpenALAudioRenderer();
 		audioRenderer.init(movie.audioStream(), movie.framerate(), true);
 		audioRenderer.setPosition(position);
