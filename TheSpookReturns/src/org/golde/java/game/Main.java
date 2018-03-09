@@ -25,7 +25,6 @@ import org.golde.java.game.objects.enemy.EntitySlasher;
 import org.golde.java.game.objects.light.EntityLamp;
 import org.golde.java.game.objects.light.Light;
 import org.golde.java.game.objects.peaceful.EntityCat;
-import org.golde.java.game.objects.peaceful.EntityFloatingTextTest;
 import org.golde.java.game.objects.player.Camera;
 import org.golde.java.game.objects.player.EntityPlayer;
 import org.golde.java.game.objects.terrain.decoration.EntityFirepit;
@@ -56,7 +55,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.util.Log;
 
@@ -244,8 +242,7 @@ public class Main {
 		entities.add(new EntityMagicCircle(loader, 0, -100, terrain1, 10));
 
 		entities.add(new EntityTV(loader, 50, -50, terrain1, 0.8f, "Kali.avi")); // 0.8f Wrecked VHS.mp4
-		
-		entities.add(new EntityFloatingTextTest(loader, 50, 10, -55));
+
 
 
 		//Sort all registered Guis by Z index
