@@ -1,6 +1,7 @@
 package org.golde.java.game.shaders;
 
 import org.golde.java.game.helpers.Maths;
+import org.golde.java.game.objects.light.Light;
 import org.golde.java.game.objects.player.Camera;
 import org.lwjgl.util.vector.Matrix4f;
 
@@ -17,6 +18,10 @@ public class WaterShader extends ShaderProgram {
 	private int location_dduvMap;
 	private int location_moveFactor;
 	private int location_cameraPosition;
+	private int location_normalMap;
+	private int location_lightColor;
+	private int location_lightPosition;
+	private int location_depthMap;
 
 	public WaterShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -39,6 +44,10 @@ public class WaterShader extends ShaderProgram {
 		location_dduvMap = getUniformLocation("dudvMap");
 		location_moveFactor = getUniformLocation("moveFactor");
 		location_cameraPosition = getUniformLocation("cameraPosition");
+		location_normalMap = getUniformLocation("normalMap");
+		location_lightColor = getUniformLocation("lightColor");
+		location_lightPosition = getUniformLocation("lightPosition");
+		location_depthMap = getUniformLocation("depthMap");
 	}
 	
 	public void loadMoveFactor(float factor) {
@@ -49,6 +58,13 @@ public class WaterShader extends ShaderProgram {
 		super.loadInt(location_reflectionTexture, 0);
 		super.loadInt(location_refractiontexture, 1);
 		super.loadInt(location_dduvMap, 2);
+		super.loadInt(location_normalMap, 3);
+		super.loadInt(location_depthMap, 4);
+	}
+	
+	public void loadLight(Light sun) {
+		super.loadVector(location_lightColor, sun.getColor());
+		super.loadVector(location_lightPosition, sun.getPosition());
 	}
 
 	public void loadProjectionMatrix(Matrix4f projection) {

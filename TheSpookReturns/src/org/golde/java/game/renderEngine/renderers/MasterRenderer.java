@@ -132,8 +132,8 @@ public class MasterRenderer {
 		colliderEntities.clear();
 	}
 	
-	public void renderWater(List<WaterTile> water, Camera camera) {
-		waterRenderer.render(water, camera);
+	public void renderWater(List<WaterTile> water, Camera camera, Light sun) {
+		waterRenderer.render(water, camera, sun);
 	}
 	
 	private List<Light> sortLights(List<Light> lights, final Camera camera)

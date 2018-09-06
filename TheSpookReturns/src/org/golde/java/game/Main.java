@@ -242,7 +242,7 @@ public class Main {
 		entities.add(new EntityCat(loader, 60, 40, terrain1, 10));
 		entities.add(new EntityHorse(loader, 70, 40, terrain1, 0.1f));
 
-		lights.add(new Light(new Vector3f(2000, 2000, 0), new Vector3f(0.2f, 0.2f, 0.2f))); //Sun
+
 		entities.add(new EntityLamp(loader, 100, 10, terrain1, 1)); //.setAttenuation(0.5f, 0.003f, 0.0005f).setSpotLight(new Vector3f(-1, -0.1F, -0.15F), 10, 30)
 		entities.add(new EntityLamp(loader, -100, 10, terrain1, 1).setColor(new Vector3f(2, 0, 0)));
 
@@ -261,19 +261,24 @@ public class Main {
 		//entities.add(new EntityTV(loader, 50, -50, terrain1, 0.8f)); // 0.8f
 		entities.add(new EntityTV(loader, 50, -50, terrain1, 0.8f, "Wrecked VHS.mp4")); // 0.8f Wrecked VHS.mp4
 
+
+		//Lights
+		Light sun = new Light(new Vector3f(2000, 2000, 0), new Vector3f(0.5f, 0.5f, 0.5f));
+		lights.add(sun); //Sun
+
 		//Water
 		List<WaterTile> water = new ArrayList<WaterTile>();
 		WaterTile waterTile = new WaterTile(90, -117, 0);
 		water.add(waterTile);
 
 
-				GuiStaticTexture waterTestTextureReflection = new GuiStaticTexture(fbos.getReflectionTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
-				GuiStaticTexture waterTestTextureRefraction = new GuiStaticTexture(fbos.getRefractionTexture(), new Vector2f(-0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
-				
-				player.getGuiOverlay().addGuiTexture(waterTestTextureReflection);
-				player.getGuiOverlay().addGuiTexture(waterTestTextureRefraction);
+//		GuiStaticTexture waterTestTextureReflection = new GuiStaticTexture(fbos.getReflectionTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+//		GuiStaticTexture waterTestTextureRefraction = new GuiStaticTexture(fbos.getRefractionTexture(), new Vector2f(-0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+//
+//		player.getGuiOverlay().addGuiTexture(waterTestTextureReflection);
+//		player.getGuiOverlay().addGuiTexture(waterTestTextureRefraction);
 
-		player.setHasGravity(false);
+		//player.setHasGravity(false);
 
 		//Final
 		DisplayManager.aboutToStartGameLoop();
@@ -349,7 +354,7 @@ public class Main {
 				float distance = 2 * (camera.getPosition().y - waterTile.getHeight());
 				camera.getPosition().y -= distance;
 				camera.invertPitch();
-				renderer.renderScene(lights, camera, terrains, entities, multiplayer.getPlayers(), new Vector4f(0, 1, 0, -waterTile.getHeight()));
+				renderer.renderScene(lights, camera, terrains, entities, multiplayer.getPlayers(), new Vector4f(0, 1, 0, -waterTile.getHeight()+1));
 				camera.getPosition().y += distance;
 				camera.invertPitch();
 
@@ -362,7 +367,7 @@ public class Main {
 				fbos.unbindCurrentFrameBuffer();
 				renderer.renderScene(lights, camera, terrains, entities, multiplayer.getPlayers(), new Vector4f(0, 1, 0, 1000000)); //1000000 so nothing will be clipped, hacky workaround because some drivers ignore GL11.glDisable(GL30.GL_CLIP_DISTANCE0); 
 
-				renderer.renderWater(water, camera);
+				renderer.renderWater(water, camera, sun);
 
 
 				//render last
