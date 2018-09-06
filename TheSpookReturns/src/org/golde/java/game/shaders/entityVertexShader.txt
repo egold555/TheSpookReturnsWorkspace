@@ -20,9 +20,13 @@ uniform float useFakeLightning;
 uniform float density;
 uniform float gradient;
 
+uniform vec4 plane;
+
 void main(void){
 
     vec4 worldPosition = transformationMatrix * vec4(position,1.0);
+    
+    gl_ClipDistance[0] = dot(worldPosition, plane);
 
 	vec4 positionRelativeToCam =  viewMatrix * worldPosition;
 	

@@ -38,7 +38,7 @@ public class FontShader extends ShaderProgram{
     }
      
     public void loadTranslation(Vector2f translation){
-        super.load2DVector(location_translation, translation);
+        super.loadVector(location_translation, translation);
     }
  
  

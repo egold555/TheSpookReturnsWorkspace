@@ -6,7 +6,7 @@ import java.util.Map;
 import org.golde.java.game.models.TexturedModel;
 import org.golde.java.game.objects.base.entities.Entity;
 import org.golde.java.game.renderEngine.VaoList;
-import org.golde.java.game.shaders.StaticShader;
+import org.golde.java.game.shaders.EntityShader;
 import org.golde.java.game.textures.model.ModelTexture;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -16,9 +16,9 @@ import org.lwjgl.util.vector.Matrix4f;
 
 public class EntityRenderer {
 	
-	private StaticShader shader;
+	private EntityShader shader;
 	
-	public EntityRenderer(StaticShader shader, Matrix4f projectionMatrix) {
+	public EntityRenderer(EntityShader shader, Matrix4f projectionMatrix) {
 		this.shader = shader;
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);

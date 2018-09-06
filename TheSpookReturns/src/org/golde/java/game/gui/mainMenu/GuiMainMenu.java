@@ -38,7 +38,7 @@ public class GuiMainMenu extends Gui{
 
 		});
 		
-		buttons.add(new Button(loader, "mainMenu/multiplayer", new Vector2f(-0.04f, 0.4f), new Vector2f(0.3f, 0.2f), this) {
+		/*buttons.add(new Button(loader, "mainMenu/multiplayer", new Vector2f(-0.04f, 0.4f), new Vector2f(0.3f, 0.2f), this) {
 
 			@Override
 			public void onClick() {
@@ -60,7 +60,7 @@ public class GuiMainMenu extends Gui{
 			@Override
 			public void stopHover() {}
 
-		});
+		});*/
 
 		/*buttons.add(new Button(loader, "mainMenu/options", new Vector2f(0.04f, -0.4f), new Vector2f(0.4f, 0.3f), this) {
 

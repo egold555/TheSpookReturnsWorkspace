@@ -1,5 +1,6 @@
 package org.golde.java.game.objects.terrain.decoration;
 
+import org.golde.java.game.GLog;
 import org.golde.java.game.Main;
 import org.golde.java.game.audio.AudioMaster;
 import org.golde.java.game.audio.Source;
@@ -16,6 +17,8 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class EntityPiano extends Entity{
 
+	boolean canStop = false;
+	
 	//public static final int SONG_ = 1;
 	public static enum EnumSongs{
 		WET_HANDS("Wet Hands"),
@@ -69,9 +72,9 @@ public class EntityPiano extends Entity{
 		}
 		this.setAmbientLighting(0.2f);
 	}
-	
+
 	static TexturedModel model;
-	
+
 	static TexturedModel getModel(Loader loader)
 	{
 		if (model == null) {
@@ -83,7 +86,7 @@ public class EntityPiano extends Entity{
 	private EnumSongs lastSong = EnumSongs._NONE;
 	private EnumSongs randomSong() {
 		EnumSongs toReturn = EnumSongs._NONE;
-		while(toReturn == lastSong) {
+		while(toReturn == lastSong || toReturn == EnumSongs._NONE || toReturn == EnumSongs._RANDOM) {
 			toReturn = JavaHelper.randomEnum(EnumSongs.class);
 		}
 		lastSong = toReturn;
@@ -94,13 +97,15 @@ public class EntityPiano extends Entity{
 	public void onCollision(Entity collidedWith) {
 		if(collidedWith instanceof EntityPlayer) {
 			final EntityPlayer player = (EntityPlayer)collidedWith;
+			GLog.info("PainoIsPlaying: " +sfx.isPlaying() );
+			GLog.info("Song: " + songToPlay.name());
 			if(!sfx.isPlaying()) {
 				if(songToPlay == EnumSongs._NONE) {return;}
 
 				if(songToPlay == EnumSongs._RANDOM) {
 					songToPlay = randomSong();
 				}
-				
+
 				sfx.play(songToPlay.songID);
 
 
@@ -119,10 +124,25 @@ public class EntityPiano extends Entity{
 					});
 				}
 				
+				Main.getScheduler().runTaskLater(3000, new Runnable() {
+
+					@Override
+					public void run() {
+						canStop = true;
+					}
+
+				});
+
+			} else {
+				if(canStop) {
+					sfx.stop();
+					songToPlay = randomSong();
+					canStop = false;
+				}
 			}
 		}
 	}
-	
+
 	public final boolean isPlaying() {
 		return sfx.isPlaying();
 	}

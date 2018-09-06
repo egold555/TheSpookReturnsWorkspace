@@ -14,6 +14,12 @@ public class GuiStaticTexture {
 		this.scale = scale;
 	}
 	
+	public GuiStaticTexture(int texture, Vector2f position, Vector2f scale) {
+		this.texture = texture;
+		this.position = position;
+		this.scale = scale;
+	}
+	
 	public GuiStaticTexture(Loader loader, String texture, Vector2f position, Vector2f scale) {
 		this.texture = loader.loadTexture("gui/" + texture);
 		this.position = position;

@@ -8,6 +8,7 @@ import org.golde.java.game.objects.player.Camera;
 import org.golde.java.game.renderEngine.VaoList;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 public class TerrainShader extends ShaderProgram{
 	private static final int MAX_LIGHTS = 8;
@@ -33,6 +34,7 @@ public class TerrainShader extends ShaderProgram{
 	private int location_blendMap;
 	private int location_fogDensity;
 	private int location_fogGradient;
+	private int location_plane;
 	
 	public TerrainShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -60,7 +62,7 @@ public class TerrainShader extends ShaderProgram{
 		location_blendMap = super.getUniformLocation("blendMap");
 		location_fogDensity = super.getUniformLocation("density");
 		location_fogGradient = super.getUniformLocation("gradient");
-		
+		location_plane = super.getUniformLocation("plane");
 		
 		location_lightPos = new int[MAX_LIGHTS];
 		location_lightColor = new int[MAX_LIGHTS];
@@ -86,6 +88,8 @@ public class TerrainShader extends ShaderProgram{
 		super.loadInt(location_bTexture, 3);
 		super.loadInt(location_blendMap, 4);
 	}
+	
+	
 	
 	public void loadSkyColor(float r, float g, float b) {
 		super.loadVector(location_skyColor, new Vector3f(r, g, b));
@@ -120,6 +124,10 @@ public class TerrainShader extends ShaderProgram{
 				super.loadFloat(location_lightOuterConeCos[i], -2.0F);
 			}
 		}
+	}
+	
+	public void loadClipPlane(Vector4f plane) {
+		super.loadVector(location_plane, plane);
 	}
 	
 	public void loadTransformationMatrix(Matrix4f matrix) {

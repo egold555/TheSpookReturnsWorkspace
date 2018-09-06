@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.golde.java.game.helpers.Maths;
 import org.golde.java.game.models.TexturedModel;
+import org.golde.java.game.multiplayer.MPlayer;
 import org.golde.java.game.objects.base.colliders.BoxCollider;
 import org.golde.java.game.objects.base.colliders.Collider;
 import org.golde.java.game.objects.base.colliders.CylinderCollider;
@@ -16,13 +17,17 @@ import org.golde.java.game.objects.debug.EntityColliderBox;
 import org.golde.java.game.objects.debug.EntityColliderCylinder;
 import org.golde.java.game.objects.light.Light;
 import org.golde.java.game.objects.player.Camera;
+import org.golde.java.game.objects.terrain.decoration.WaterTile;
 import org.golde.java.game.renderEngine.Loader;
-import org.golde.java.game.shaders.StaticShader;
+import org.golde.java.game.renderEngine.WaterFrameBuffers;
+import org.golde.java.game.shaders.EntityShader;
 import org.golde.java.game.shaders.TerrainShader;
+import org.golde.java.game.shaders.WaterShader;
 import org.golde.java.game.terrains.Terrain;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector4f;
 
 public class MasterRenderer {
 
@@ -36,22 +41,27 @@ public class MasterRenderer {
 	private static final float FOG_DENSITY = 0.007f; //0.007f
 	private static final float FOG_GRADIENT = 1.5f; //1.5f;
 	
-	private StaticShader staticShader = new StaticShader();
+	private EntityShader staticShader = new EntityShader();
 	private EntityRenderer entityRenderer;
 	private TerrainRenderer terrainRenderer;
 	private TerrainShader terrainShader = new TerrainShader();
+	private WaterShader waterShader = new WaterShader();
+	private WaterRenderer waterRenderer;
+	
 	private SkyboxRenderer skybox;
 	private Loader loader;
 	
 	private boolean renderColliders = false;
 	
-	public MasterRenderer(Loader loader) {
+	public MasterRenderer(Loader loader, WaterFrameBuffers waterFbos) {
 		enableCulling();
 		createProjectionMatrix();
 		entityRenderer = new EntityRenderer(staticShader, projectionMatrix);
 		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
 		skybox = new SkyboxRenderer(loader, projectionMatrix);
 		this.loader = loader;
+		
+		waterRenderer = new WaterRenderer(loader, waterShader, projectionMatrix, waterFbos);
 	}
 	
 	private Map<TexturedModel, List<Entity>> entities = new HashMap<TexturedModel, List<Entity>>();
@@ -71,10 +81,30 @@ public class MasterRenderer {
 		this.renderColliders = renderColliders;
 	}
 	
-	public void render(List<Light> lights, Camera camera) {
+	public void renderScene(List<Light> lights, Camera camera, List<Terrain> terrainsIn, List<Entity> entitiesIn, List<MPlayer> playersIn, Vector4f clipPlane) {
+		for(Terrain terrain : terrainsIn) {
+			prossessTerrain(terrain);
+		}
+		
+		for(Entity entity : entitiesIn) {
+			processEntity(entity);
+		}
+		
+		for(MPlayer player : playersIn) {
+			processEntity(player.entity);
+		}
+		
+		render(camera, lights, clipPlane);
+	}
+	
+	private void render(Camera camera, List<Light> lights, Vector4f clipPlane) {
+		
+		
+		
 		prepare();
 		
 		staticShader.start();
+		staticShader.loadClipPlane(clipPlane);
 		staticShader.loadFog(FOG_DENSITY, FOG_GRADIENT);
 		staticShader.loadSkyColor(SKY_RED, SKY_GREEN, SKY_BLUE);
 		staticShader.loadLights(lights);
@@ -86,6 +116,7 @@ public class MasterRenderer {
 		staticShader.stop();
 		
 		terrainShader.start();
+		terrainShader.loadClipPlane(clipPlane);//TODO: FIX GROUND NOT RENDEING
 		terrainShader.loadFog(FOG_DENSITY, FOG_GRADIENT);
 		terrainShader.loadSkyColor(SKY_RED, SKY_GREEN, SKY_BLUE);
 		terrainShader.loadLights(sortLights(lights, camera));
@@ -98,6 +129,10 @@ public class MasterRenderer {
 		terrains.clear();
 		entities.clear();
 		colliderEntities.clear();
+	}
+	
+	public void renderWater(List<WaterTile> water, Camera camera) {
+		waterRenderer.render(water, camera);
 	}
 	
 	private List<Light> sortLights(List<Light> lights, final Camera camera)
@@ -131,12 +166,11 @@ public class MasterRenderer {
 			return Maths.distance(camera.getPosition(), light.getPosition());
 	}
 	
-	
-	public void prossessTerrain(Terrain terrain) {
+	private void prossessTerrain(Terrain terrain) {
 		terrains.add(terrain);
 	}
 	
-	public void processEntity(Entity entity) {
+	private void processEntity(Entity entity) {
 		TexturedModel entityModel = entity.getModel();
 		List<Entity> batch = entities.get(entityModel);
 		if(batch != null) {
@@ -198,6 +232,8 @@ public class MasterRenderer {
 	public void cleanUp() {
 		staticShader.cleanUp();
 		terrainShader.cleanUp();
+		waterShader.cleanUp();
+		
 	}
 	
 	public Matrix4f getProjectionMatrix() {

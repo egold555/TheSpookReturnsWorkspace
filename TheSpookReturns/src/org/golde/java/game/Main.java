@@ -14,6 +14,7 @@ import org.golde.java.game.gui.base.GuiText;
 import org.golde.java.game.gui.mainMenu.GuiMainMenu;
 import org.golde.java.game.gui.mainMenu.GuiOptions;
 import org.golde.java.game.gui.player.GuiDebug;
+import org.golde.java.game.helpers.BetterKeyboard;
 import org.golde.java.game.helpers.BlankLogger;
 import org.golde.java.game.multiplayer.MPlayer;
 import org.golde.java.game.multiplayer.Multiplayer;
@@ -31,18 +32,23 @@ import org.golde.java.game.objects.terrain.decoration.EntityOilDrum;
 import org.golde.java.game.objects.terrain.decoration.EntityPiano;
 import org.golde.java.game.objects.terrain.decoration.EntityPiano.EnumSongs;
 import org.golde.java.game.objects.terrain.decoration.EntityTV;
+import org.golde.java.game.objects.terrain.decoration.WaterTile;
 import org.golde.java.game.objects.terrain.plants.EntityTree;
+import org.golde.java.game.objects.terrain.structures.EntityChurch;
 import org.golde.java.game.objects.terrain.structures.EntityFarmHouse;
 import org.golde.java.game.renderEngine.DisplayManager;
 import org.golde.java.game.renderEngine.Loader;
 import org.golde.java.game.renderEngine.TextMaster;
+import org.golde.java.game.renderEngine.WaterFrameBuffers;
 import org.golde.java.game.renderEngine.particles.ParticleMaster;
 import org.golde.java.game.renderEngine.particles.RainMaker;
 import org.golde.java.game.renderEngine.renderers.GuiRenderer;
 import org.golde.java.game.renderEngine.renderers.MasterRenderer;
 import org.golde.java.game.scheduler.Scheduler;
+import org.golde.java.game.shaders.WaterShader;
 import org.golde.java.game.terrains.HeightMapTerrain;
 import org.golde.java.game.terrains.Terrain;
+import org.golde.java.game.textures.gui.GuiStaticTexture;
 import org.golde.java.game.textures.particles.ParticleTexture;
 import org.golde.java.game.textures.terrain.TerrainTexture;
 import org.golde.java.game.textures.terrain.TerrainTexturePack;
@@ -51,7 +57,11 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 import org.newdawn.slick.util.Log;
 
 import com.esotericsoftware.kryonet.Client;
@@ -143,6 +153,8 @@ public class Main {
 	}
 	//End
 
+	static boolean wireframe = false;
+	
 	public static void main(String[] args) {
 		//**********Basic Setup***************
 		DisplayManager.createDisplay();
@@ -150,7 +162,8 @@ public class Main {
 		TextMaster.init(loader);
 		FONT = new FontType(loader, "Verdana");
 		guiRenderer = new GuiRenderer(loader);
-		renderer = new MasterRenderer(loader);
+		WaterFrameBuffers fbos = new WaterFrameBuffers();
+		renderer = new MasterRenderer(loader, fbos);
 
 		Log.setLogSystem(new BlankLogger()); //Stop SlickUtil from logging pointless errors
 		
@@ -210,13 +223,11 @@ public class Main {
 		player.getGuiOverlay().setVisible(false);
 		//*********************
 
-		
-
 		entities.add(new EntityTree(loader, 90, 90, terrain1, 10f));
 
 		entities.add(new EntitySkeleton(loader, 100, 100, terrain1, 1f));
 		entities.add(new EntitySlasher(loader, 40, 0, terrain1, 10));
-		//entities.add(new EntityChurch(loader, 300, 300, terrain1, 40));
+		entities.add(new EntityChurch(loader, 300, 300, terrain1, 40));
 		entities.add(new EntityFarmHouse(loader, 0, 0, terrain1, 2));
 		entities.add(new EntityPiano(loader, 40, 40, terrain1, 2.5f, EnumSongs._RANDOM));
 		
@@ -231,7 +242,22 @@ public class Main {
 
 		
 		//entities.add(new EntityTV(loader, 50, -50, terrain1, 0.8f)); // 0.8f
-		entities.add(new EntityTV(loader, 50, -50, terrain1, 0.8f, "Kali.avi")); // 0.8f Wrecked VHS.mp4
+		entities.add(new EntityTV(loader, 50, -50, terrain1, 0.8f, "Wrecked VHS.mp4")); // 0.8f Wrecked VHS.mp4
+		
+		//Water
+		List<WaterTile> water = new ArrayList<WaterTile>();
+		WaterTile waterTile = new WaterTile(90, -117, 0);
+		water.add(waterTile);
+		
+		
+//		GuiStaticTexture waterTestTextureReflection = new GuiStaticTexture(fbos.getReflectionTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+//		GuiStaticTexture waterTestTextureRefraction = new GuiStaticTexture(fbos.getRefractionTexture(), new Vector2f(-0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+//		
+//		player.getGuiOverlay().addGuiTexture(waterTestTextureReflection);
+//		player.getGuiOverlay().addGuiTexture(waterTestTextureRefraction);
+		
+		//player.setHasGravity(false);
+		
 		//Final
 		DisplayManager.aboutToStartGameLoop();
 
@@ -289,18 +315,6 @@ public class Main {
 
 			AudioMaster.setListenerData(camera);
 
-			for(Terrain terrain:terrains) {
-				renderer.prossessTerrain(terrain);
-			}
-
-			for(Entity entity:entities) {
-				renderer.processEntity(entity);
-			}
-			
-			for(MPlayer mplayer : multiplayer.getPlayers()) {
-				renderer.processEntity(mplayer.entity);
-			}
-
 			for(Source source:AudioMaster.sources) {
 				source.tick();
 			}
@@ -308,10 +322,28 @@ public class Main {
 			rainParticles.generateParticles(player.getPosition().x, player.getPosition().z);
 
 			//Game renderer
+			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
-
-
-			renderer.render(lights, camera);
+			//TODO: Animated textures are 3x faster
+			//Render the scene once and store it in the water frame buffer - reflection
+			fbos.bindReflectionFrameBuffer();
+			float distance = 2 * (camera.getPosition().y - waterTile.getHeight());
+			camera.getPosition().y -= distance;
+			camera.invertPitch();
+			renderer.renderScene(lights, camera, terrains, entities, multiplayer.getPlayers(), new Vector4f(0, 1, 0, -waterTile.getHeight()));
+			camera.getPosition().y += distance;
+			camera.invertPitch();
+			
+			//Render the scene once and store it in the water frame buffer - refraction
+			fbos.bindRefractionFrameBuffer();
+			renderer.renderScene(lights, camera, terrains, entities, multiplayer.getPlayers(), new Vector4f(0, -1, 0, waterTile.getHeight()));
+			
+			//Actually render the game to the screen
+			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
+			fbos.unbindCurrentFrameBuffer();
+			renderer.renderScene(lights, camera, terrains, entities, multiplayer.getPlayers(), new Vector4f(0, 1, 0, 1000000)); //1000000 so nothing will be clipped, hacky workaround because some drivers ignore GL11.glDisable(GL30.GL_CLIP_DISTANCE0); 
+			
+			renderer.renderWater(water, camera);
 
 
 			//render last
@@ -329,6 +361,18 @@ public class Main {
 					for(GuiText text:gui.getTextsToBeRendered()) {
 						TextMaster.removeText(text);
 					}
+				}
+			}
+			
+			if(BetterKeyboard.wasKeyPressed(Keyboard.KEY_F5)) {
+				wireframe = !wireframe;
+				GLog.info("Wireframe: + wireframe");
+				if(wireframe) {
+					GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+				       GL11.glDisable(GL11.GL_TEXTURE_2D);
+				} else {
+					GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+					GL11.glEnable(GL11.GL_TEXTURE_2D);
 				}
 			}
 			
@@ -410,6 +454,10 @@ public class Main {
 
 	static class ConsoleRunnable implements Runnable{
 
+		public ConsoleRunnable() {
+			GLog.info("Console commands active.");
+		}
+		
 		Scanner scan = new Scanner(System.in);
 		public void run()
 		{

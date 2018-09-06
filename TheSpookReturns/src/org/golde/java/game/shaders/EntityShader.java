@@ -9,12 +9,13 @@ import org.golde.java.game.objects.player.Camera;
 import org.golde.java.game.renderEngine.VaoList;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
-public class StaticShader extends ShaderProgram{
+public class EntityShader extends ShaderProgram{
 	private static final int MAX_LIGHTS = 8;
 
-	private static final String VERTEX_FILE = "src/org/golde/java/game/shaders/vertexShader.txt";
-	private static final String FRAGMENT_FILE = "src/org/golde/java/game/shaders/fragmentShader.txt";
+	private static final String VERTEX_FILE = PACKAGE + "entityVertexShader.txt";
+	private static final String FRAGMENT_FILE = PACKAGE + "entityFragmentShader.txt";
 	private int location_transformationMatrix;
 	private int location_projectionMatrix;
 	private int location_viewMatrix;
@@ -31,8 +32,9 @@ public class StaticShader extends ShaderProgram{
 	private int location_fogDensity;
 	private int location_fogGradient;
 	private int location_ambientLighting;
+	private int location_plane;
 	
-	public StaticShader() {
+	public EntityShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
 	}
 
@@ -55,6 +57,7 @@ public class StaticShader extends ShaderProgram{
 		location_fogDensity = super.getUniformLocation("density");
 		location_fogGradient = super.getUniformLocation("gradient");
 		location_ambientLighting = super.getUniformLocation("ambientLighting");
+		location_plane = super.getUniformLocation("plane");
 		
 		location_lightPos = new int[MAX_LIGHTS];
 		location_lightColor = new int[MAX_LIGHTS];
@@ -113,6 +116,10 @@ public class StaticShader extends ShaderProgram{
 				
 			}
 		}
+	}
+	
+	public void loadClipPlane(Vector4f plane) {
+		super.loadVector(location_plane, plane);
 	}
 	
 	public void loadTransformationMatrix(Matrix4f matrix) {
