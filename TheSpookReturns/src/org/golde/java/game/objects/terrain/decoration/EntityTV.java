@@ -9,6 +9,7 @@ import org.golde.java.game.objects.base.entities.Entity;
 import org.golde.java.game.objects.player.EntityPlayer;
 import org.golde.java.game.renderEngine.Loader;
 import org.golde.java.game.renderEngine.OBJLoader;
+import org.golde.java.game.renderEngine.renderers.MasterRenderer.EnumRenderCall;
 import org.golde.java.game.terrains.Terrain;
 import org.golde.java.game.textures.model.ModelMovieTexture;
 import org.golde.java.game.textures.model.ModelTexture;
@@ -67,13 +68,15 @@ public class EntityTV extends Entity{
 	}
 
 	@Override
-	public void onRender() {
-		if(!mp.isPlaying() && isRunningAnimation == true) {
-			Main.getEntities().remove(tvScreen);
-			isRunningAnimation = false;
-			mp.resetToBeginning(); //can close before last frame is finished laying
+	public void onRender(EnumRenderCall renderCall) {
+		if(renderCall == EnumRenderCall.SCENE) {
+			if(!mp.isPlaying() && isRunningAnimation == true) {
+				Main.getEntities().remove(tvScreen);
+				isRunningAnimation = false;
+				mp.resetToBeginning(); //can close before last frame is finished laying
+			}
 		}
-		super.onRender();
+		super.onRender(renderCall);
 	}
 
 }

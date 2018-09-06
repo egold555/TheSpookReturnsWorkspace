@@ -5,6 +5,7 @@ import java.util.List;
 import org.golde.java.game.helpers.Maths;
 import org.golde.java.game.models.RawModel;
 import org.golde.java.game.renderEngine.VaoList;
+import org.golde.java.game.renderEngine.renderers.MasterRenderer.EnumRenderCall;
 import org.golde.java.game.shaders.TerrainShader;
 import org.golde.java.game.terrains.Terrain;
 import org.golde.java.game.textures.terrain.TerrainTexturePack;
@@ -27,7 +28,7 @@ public class TerrainRenderer {
 		shader.stop();
 	}
 	
-	public void render(List<Terrain> terrains) {
+	public void render(List<Terrain> terrains, EnumRenderCall renderCall) {
 		for(Terrain terrain:terrains) {
 			prepareTerrain(terrain);
 			loadModelMatrix(terrain);

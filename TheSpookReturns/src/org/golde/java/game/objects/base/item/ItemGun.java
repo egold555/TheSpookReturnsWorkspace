@@ -31,11 +31,5 @@ public abstract class ItemGun extends Item{
 			}
 		}
 	}
-	
-	@Override
-	public void onRender() {
-		
-		super.onRender();
-	}
 
 }

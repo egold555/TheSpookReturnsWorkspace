@@ -21,6 +21,7 @@ import org.golde.java.game.objects.player.Camera;
 import org.golde.java.game.objects.terrain.decoration.WaterTile;
 import org.golde.java.game.renderEngine.Loader;
 import org.golde.java.game.renderEngine.WaterFrameBuffers;
+import org.golde.java.game.renderEngine.renderers.MasterRenderer.EnumRenderCall;
 import org.golde.java.game.shaders.EntityShader;
 import org.golde.java.game.shaders.TerrainShader;
 import org.golde.java.game.shaders.WaterShader;
@@ -82,7 +83,7 @@ public class MasterRenderer {
 		this.renderColliders = renderColliders;
 	}
 	
-	public void renderScene(List<Light> lights, Camera camera, List<Terrain> terrainsIn, List<Entity> entitiesIn, List<MPlayer> playersIn, Vector4f clipPlane) {
+	public void renderScene(List<Light> lights, Camera camera, List<Terrain> terrainsIn, List<Entity> entitiesIn, List<MPlayer> playersIn, Vector4f clipPlane, EnumRenderCall renderCall) {
 		for(Terrain terrain : terrainsIn) {
 			prossessTerrain(terrain);
 		}
@@ -95,10 +96,10 @@ public class MasterRenderer {
 			processEntity(player.entity);
 		}
 		
-		render(camera, lights, clipPlane);
+		render(camera, lights, clipPlane, renderCall);
 	}
 	
-	private void render(Camera camera, List<Light> lights, Vector4f clipPlane) {
+	private void render(Camera camera, List<Light> lights, Vector4f clipPlane, EnumRenderCall renderCall) {
 		
 		
 		
@@ -110,9 +111,9 @@ public class MasterRenderer {
 		staticShader.loadSkyColor(SKY_RED, SKY_GREEN, SKY_BLUE);
 		staticShader.loadLights(lights);
 		staticShader.loadViewMatrix(camera);
-		entityRenderer.render(entities);
+		entityRenderer.render(entities, renderCall);
 		if (renderColliders) {
-			entityRenderer.render(colliderEntities);
+			entityRenderer.render(colliderEntities, renderCall);
 		}
 		staticShader.stop();
 		
@@ -122,10 +123,10 @@ public class MasterRenderer {
 		terrainShader.loadSkyColor(SKY_RED, SKY_GREEN, SKY_BLUE);
 		terrainShader.loadLights(sortLights(lights, camera));
 		terrainShader.loadViewMatrix(camera);
-		terrainRenderer.render(terrains);
+		terrainRenderer.render(terrains, renderCall);
 		terrainShader.stop();
 		
-		skybox.render(camera);
+		skybox.render(camera, renderCall);
 		
 		terrains.clear();
 		entities.clear();
@@ -241,6 +242,10 @@ public class MasterRenderer {
 	
 	public Matrix4f getProjectionMatrix() {
 		return projectionMatrix;
+	}
+	
+	public static enum EnumRenderCall {
+		WATER_REFLECTION, WATER_REFRACTION, SCENE
 	}
 	
 }

@@ -52,12 +52,6 @@ public class EntityBullet extends EntityMoveable{
 		}
 		return model;
 	}
-	
-	@Override
-	public void onRender() {
-		//GL11.glRotatef(10.0F, 1.0F, 0.0F, 0.0F);
-		super.onRender();
-	}
 
 	@Override
 	public void onCollision(Entity collidedWith) {

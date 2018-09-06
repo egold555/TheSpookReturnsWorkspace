@@ -10,6 +10,7 @@ import org.golde.java.game.helpers.Maths;
 import org.golde.java.game.models.TexturedModel;
 import org.golde.java.game.objects.base.behavior.Behavior;
 import org.golde.java.game.objects.base.colliders.Collider;
+import org.golde.java.game.renderEngine.renderers.MasterRenderer.EnumRenderCall;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -183,9 +184,9 @@ public class Entity {
 		}
 	}
 	
-	public void onRender() {
+	public void onRender(EnumRenderCall renderCall) {
 		if(model == null || model.getTexture() == null) {return;}
-		model.getTexture().onRender();
+		model.getTexture().onRender(renderCall);
 		for(Behavior behavior:behaviors) {
 			behavior.onRender(this);
 		}

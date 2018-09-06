@@ -6,6 +6,7 @@ import java.util.Map;
 import org.golde.java.game.models.TexturedModel;
 import org.golde.java.game.objects.base.entities.Entity;
 import org.golde.java.game.renderEngine.VaoList;
+import org.golde.java.game.renderEngine.renderers.MasterRenderer.EnumRenderCall;
 import org.golde.java.game.shaders.EntityShader;
 import org.golde.java.game.textures.model.ModelTexture;
 import org.lwjgl.opengl.GL11;
@@ -25,14 +26,14 @@ public class EntityRenderer {
 		shader.stop();
 	}
 	
-	public void render(Map<TexturedModel, List<Entity>> entities) {
+	public void render(Map<TexturedModel, List<Entity>> entities, EnumRenderCall renderCall) {
 		for(TexturedModel model:entities.keySet()) {
 			prepareTexturedModel(model);
 			List<Entity> batch = entities.get(model);
 			for(Entity entity:batch) {
 				shader.loadAmbientLighting(entity);
 				prepareInstance(entity);
-				entity.onRender();
+				entity.onRender(renderCall);
 				if(entity.getModel() == null) {continue;}
 				GL11.glDrawElements(GL11.GL_TRIANGLES, model.getRawModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
 			}

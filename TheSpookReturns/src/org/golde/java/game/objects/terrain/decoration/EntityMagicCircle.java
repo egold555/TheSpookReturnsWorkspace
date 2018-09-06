@@ -9,6 +9,7 @@ import org.golde.java.game.objects.light.Light;
 import org.golde.java.game.renderEngine.Loader;
 import org.golde.java.game.renderEngine.OBJLoader;
 import org.golde.java.game.renderEngine.particles.ParticleSystem;
+import org.golde.java.game.renderEngine.renderers.MasterRenderer.EnumRenderCall;
 import org.golde.java.game.terrains.Terrain;
 import org.golde.java.game.textures.model.ModelTexture;
 import org.golde.java.game.textures.particles.ParticleTexture;
@@ -53,15 +54,17 @@ public class EntityMagicCircle extends Entity {
 	}
 
 	@Override
-	public void onRender() {
-		psystem.generateParticles(getPosition());
-		
-		super.onRender();
+	public void onRender(EnumRenderCall renderCall) {
+		if(renderCall == EnumRenderCall.SCENE) {
+			psystem.generateParticles(getPosition());
+		}
+
+		super.onRender(renderCall);
 	}
 
 	@Override
 	public void onCollision(Entity collidedWith) {
-		
+
 		if(collidedWith instanceof EntityMoveable) {
 			((EntityMoveable)collidedWith).addVelocity(0, 5, 0);
 		}
@@ -84,7 +87,7 @@ public class EntityMagicCircle extends Entity {
 		double x = radius * Math.cos(y2);
 		double z = radius * Math.sin(y2);
 		Vector3f newPos = new Vector3f((float) (loc.getX() + x), (float) (loc.getY() + y2 + 4), (float) (loc.getZ() + z));
-		
+
 		new Particle(particleTexture, newPos, new Vector3f(0,0,0), 0.5f, 4, 0, 1);
 		if(y2 >= 50) {	
 			y2 = 0;

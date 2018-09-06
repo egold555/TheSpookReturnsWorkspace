@@ -20,6 +20,7 @@ import org.golde.java.game.objects.player.items.FlashLight;
 import org.golde.java.game.objects.player.items.guns.ItemAmmoBox;
 import org.golde.java.game.objects.player.items.guns.ItemAmmoBox.EnumAmmoBoxType;
 import org.golde.java.game.renderEngine.Loader;
+import org.golde.java.game.renderEngine.renderers.MasterRenderer.EnumRenderCall;
 import org.golde.java.game.terrains.Terrain;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -38,7 +39,7 @@ public class EntityPlayer extends EntityMoveable{
 	private int sound;
 	private GuiPlayerOverlay guiOverlay;
 	private Loader loader;
-	
+
 	private Light flashLight;
 	private boolean flashlightEnabled;
 	private GuiFade guiFade;
@@ -52,7 +53,7 @@ public class EntityPlayer extends EntityMoveable{
 		sound = AudioMaster.loadSound("player/footsteps_wood");
 		guiOverlay = new GuiPlayerOverlay(this, loader);
 		guiOverlay.setVisible(true);
-		
+
 		Collider collider = new CylinderCollider(new Vector3f(), 2, 11, 0);
 		collider.blocks = false;
 		addCollider(collider);
@@ -65,12 +66,12 @@ public class EntityPlayer extends EntityMoveable{
 			inventory.set(temp, new ItemAmmoBox(loader, ammoBoxType));
 			temp++;
 		}
-		
+
 		inventory.set(5, new FlashLight(loader, 0.5f));
-		
+
 		flashLight = new Light(position, new Vector3f(0, 0, 0), new Vector3f(0.5f, 0.001f, 0.0001f));
 		Main.getLights().add(flashLight);
-		
+
 		this.guiFade = guiFade;
 	}
 
@@ -79,9 +80,9 @@ public class EntityPlayer extends EntityMoveable{
 	@Override
 	public void move(Terrain terrain) {
 		checkInputs();
-		
+
 		super.move(terrain);
-		
+
 		sfx.setPosition(this.getPosition());
 
 		if(isMoving() && !sfx.isPlaying()) {
@@ -90,22 +91,22 @@ public class EntityPlayer extends EntityMoveable{
 		if(!isMoving()) {
 			sfx.stop();
 		}
-		
+
 		if(flashlightEnabled) {
 			flashLight.setPosition(Main.getCamera().getPosition());
 			flashLight.setSpotLight(calculateFlashlightRotation(), 5, 20);
 		}
 	}
-	
+
 	Vector3f calculateFlashlightRotation() {
 		float y = (float) -Math.sin(Math.toRadians(getRotY()));
 		float x = (float) (Math.cos(Math.toRadians(getRotY())) * Math.sin(Math.toRadians(getRotX())));
-	    float z = (float) -(Math.cos(Math.toRadians(getRotY())) * Math.cos(Math.toRadians(getRotX())));
-		
+		float z = (float) -(Math.cos(Math.toRadians(getRotY())) * Math.cos(Math.toRadians(getRotX())));
+
 		return new Vector3f(x, y, z);
 	}
-	
-	
+
+
 
 	private void jump() {
 		if(isInAir) {return;}
@@ -119,13 +120,13 @@ public class EntityPlayer extends EntityMoveable{
 	private void onRightClick() {
 
 	}
-	
+
 	public void onScrollWheel(int scroll) {
 		if (scroll < 0) {
-	        guiOverlay.setSlotPosition(guiOverlay.getSelectedSlot() + 1);
-	    } else if (scroll > 0){
-	    	guiOverlay.setSlotPosition(guiOverlay.getSelectedSlot() - 1);
-	   }
+			guiOverlay.setSlotPosition(guiOverlay.getSelectedSlot() + 1);
+		} else if (scroll > 0){
+			guiOverlay.setSlotPosition(guiOverlay.getSelectedSlot() - 1);
+		}
 	}
 
 
@@ -153,7 +154,7 @@ public class EntityPlayer extends EntityMoveable{
 		float velZ = (float) (-currentSpeed * Math.cos(rotX) + currentSideSpeed * Math.sin(rotX));
 
 		super.setVelocity(velX, getVelocity().y, velZ);
-		
+
 		if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
 			if(!noclip) {
 				jump();
@@ -161,7 +162,7 @@ public class EntityPlayer extends EntityMoveable{
 				addVelocity(0, 1, 0);
 			}
 		}
-		
+
 		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 			if(noclip) {
 				addVelocity(0, -1, 0);
@@ -190,7 +191,7 @@ public class EntityPlayer extends EntityMoveable{
 				}
 			}
 		}
-		
+
 		if(BetterKeyboard.wasKeyPressed(Keyboard.KEY_O)) {
 			getFader().fadeToBlack();
 		}
@@ -198,8 +199,8 @@ public class EntityPlayer extends EntityMoveable{
 			getFader().fadeFromBlack();
 		}
 	}
-	
-	
+
+
 
 	Vector3f getThrowPosition(Item itemToDrop) {
 		// Throw from a position 4 units above feet.
@@ -223,27 +224,29 @@ public class EntityPlayer extends EntityMoveable{
 	}
 
 	@Override
-	public void onRender() {
-		if(!canFireBullet) {
-			bulletTime++;
-			if(bulletTime >=10) {
-				bulletTime = 0;
-				canFireBullet = true;
+	public void onRender(EnumRenderCall renderCall) {
+		if(renderCall == EnumRenderCall.SCENE) {
+			if(!canFireBullet) {
+				bulletTime++;
+				if(bulletTime >=10) {
+					bulletTime = 0;
+					canFireBullet = true;
+				}
 			}
-		}
-		
-		
-		if(getSelectedItem() != null && getSelectedItem().getClass().equals(FlashLight.class)) {
-			flashLight.setColor(new Vector3f(1, 1, 1));
-			flashlightEnabled = true;
-		}else {
-			flashLight.setColor(new Vector3f(0, 0, 0));
-			flashlightEnabled = false;
-		}
-		
-		
 
-		super.onRender();
+
+			if(getSelectedItem() != null && getSelectedItem().getClass().equals(FlashLight.class)) {
+				flashLight.setColor(new Vector3f(1, 1, 1));
+				flashlightEnabled = true;
+			}
+			else {
+				flashLight.setColor(new Vector3f(0, 0, 0));
+				flashlightEnabled = false;
+			}
+
+		}
+
+		super.onRender(renderCall);
 	}
 
 	private boolean canFireBullet = false;
@@ -292,7 +295,7 @@ public class EntityPlayer extends EntityMoveable{
 	public List<Item> getInventory() {
 		return inventory;
 	}
-	
+
 	public boolean hasItemInInventory(Item i) {
 		for(Item it:getInventory()) {
 			if( it.equals(i)) {
@@ -301,7 +304,7 @@ public class EntityPlayer extends EntityMoveable{
 		}
 		return false;
 	}
-	
+
 	public boolean hasItemInInventory(Class<Item> itemClazz) {
 		for(Item it:getInventory()) {
 			if(it.getClass().equals(itemClazz)) {
@@ -310,24 +313,24 @@ public class EntityPlayer extends EntityMoveable{
 		}
 		return false;
 	}
-	
+
 	Item getSelectedItem() {
 		return getItemAt(getGuiOverlay().getSelectedSlot());
 	}
-	
+
 	Item getItemAt(int index) {
 		return getInventory().get(index);
 	}
-	
+
 	public GuiFade getFader() {
 		return guiFade;
 	}
-	
+
 	public void setNoclip(boolean noclip) {
 		this.noclip = noclip;
 		this.setHasGravity(!noclip);
 	}
-	
+
 	public boolean isNocliping() {
 		return noclip;
 	}

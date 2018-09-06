@@ -4,6 +4,7 @@ import org.golde.java.game.models.RawModel;
 import org.golde.java.game.objects.player.Camera;
 import org.golde.java.game.renderEngine.Loader;
 import org.golde.java.game.renderEngine.VaoList;
+import org.golde.java.game.renderEngine.renderers.MasterRenderer.EnumRenderCall;
 import org.golde.java.game.shaders.SkyboxShader;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -74,7 +75,7 @@ public class SkyboxRenderer {
 		shader.stop();
 	}
 	
-	public void render(Camera camera) {
+	public void render(Camera camera, EnumRenderCall renderCall) {
 		shader.start();
 		shader.loadViewMatrix(camera);
 		GL30.glBindVertexArray(cube.getVaoID());

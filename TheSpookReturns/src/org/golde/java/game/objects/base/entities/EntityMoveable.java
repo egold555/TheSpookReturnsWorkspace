@@ -78,11 +78,6 @@ public abstract class EntityMoveable extends Entity{
 	public boolean isInAir() {
 		return isInAir;
 	}
-
-	@Override
-	public void onRender() {
-		super.onRender();
-	}
 	
 	public void move(Terrain terrain) {
 		if(getPosition() == null) {return;} //Items

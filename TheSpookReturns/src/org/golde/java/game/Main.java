@@ -47,6 +47,7 @@ import org.golde.java.game.renderEngine.particles.ParticleMaster;
 import org.golde.java.game.renderEngine.particles.RainMaker;
 import org.golde.java.game.renderEngine.renderers.GuiRenderer;
 import org.golde.java.game.renderEngine.renderers.MasterRenderer;
+import org.golde.java.game.renderEngine.renderers.MasterRenderer.EnumRenderCall;
 import org.golde.java.game.scheduler.Scheduler;
 import org.golde.java.game.terrains.HeightMapTerrain;
 import org.golde.java.game.terrains.Terrain;
@@ -353,18 +354,18 @@ public class Main {
 				float distance = 2 * (camera.getPosition().y - waterTile.getHeight());
 				camera.getPosition().y -= distance;
 				camera.invertPitch();
-				renderer.renderScene(lights, camera, terrains, entities, multiplayer.getPlayers(), new Vector4f(0, 1, 0, -waterTile.getHeight()+1));
+				renderer.renderScene(lights, camera, terrains, entities, multiplayer.getPlayers(), new Vector4f(0, 1, 0, -waterTile.getHeight()+1), EnumRenderCall.WATER_REFLECTION);
 				camera.getPosition().y += distance;
 				camera.invertPitch();
 
 				//Render the scene once and store it in the water frame buffer - refraction
 				fbos.bindRefractionFrameBuffer();
-				renderer.renderScene(lights, camera, terrains, entities, multiplayer.getPlayers(), new Vector4f(0, -1, 0, waterTile.getHeight()));
+				renderer.renderScene(lights, camera, terrains, entities, multiplayer.getPlayers(), new Vector4f(0, -1, 0, waterTile.getHeight()), EnumRenderCall.WATER_REFRACTION);
 
 				//Actually render the game to the screen
 				GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 				fbos.unbindCurrentFrameBuffer();
-				renderer.renderScene(lights, camera, terrains, entities, multiplayer.getPlayers(), new Vector4f(0, 1, 0, 1000000)); //1000000 so nothing will be clipped, hacky workaround because some drivers ignore GL11.glDisable(GL30.GL_CLIP_DISTANCE0); 
+				renderer.renderScene(lights, camera, terrains, entities, multiplayer.getPlayers(), new Vector4f(0, 1, 0, 1000000), EnumRenderCall.SCENE); //1000000 so nothing will be clipped, hacky workaround because some drivers ignore GL11.glDisable(GL30.GL_CLIP_DISTANCE0); 
 
 				renderer.renderWater(water, camera, sun);
 

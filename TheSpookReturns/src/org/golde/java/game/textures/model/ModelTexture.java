@@ -1,5 +1,7 @@
 package org.golde.java.game.textures.model;
 
+import org.golde.java.game.renderEngine.renderers.MasterRenderer.EnumRenderCall;
+
 public class ModelTexture {
 
 	private int textureID;
@@ -50,6 +52,6 @@ public class ModelTexture {
 		this.useFakeLightning = useFakeLightning;
 	}
 	
-	public void onRender() {}
+	public void onRender(EnumRenderCall renderCall) {}
 	
 }
