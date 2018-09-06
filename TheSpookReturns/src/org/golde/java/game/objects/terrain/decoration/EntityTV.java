@@ -69,13 +69,13 @@ public class EntityTV extends Entity{
 
 	@Override
 	public void onRender(EnumRenderCall renderCall) {
-		if(renderCall == EnumRenderCall.SCENE) {
+		//if(renderCall == EnumRenderCall.SCENE) {
 			if(!mp.isPlaying() && isRunningAnimation == true) {
 				Main.getEntities().remove(tvScreen);
 				isRunningAnimation = false;
 				mp.resetToBeginning(); //can close before last frame is finished laying
 			}
-		}
+		//}
 		super.onRender(renderCall);
 	}
 

@@ -40,6 +40,10 @@ public class MoviePlayer {
 		this.movieFile = movieFile;
 
 		movie = Movie.open(movieFile);
+		
+		if(movie == null) {
+			GLog.error("Movie is null");
+		}
 
 		boolean usePBOs = true;
 		if (usePBOs) {

@@ -28,7 +28,7 @@ public class EntityRenderer {
 	
 	public void render(Map<TexturedModel, List<Entity>> entities, EnumRenderCall renderCall) {
 		for(TexturedModel model:entities.keySet()) {
-			prepareTexturedModel(model);
+			prepareTexturedModel(model, renderCall);
 			List<Entity> batch = entities.get(model);
 			for(Entity entity:batch) {
 				shader.loadAmbientLighting(entity);
@@ -41,7 +41,7 @@ public class EntityRenderer {
 		}
 	}
 	
-	private void prepareTexturedModel(TexturedModel model) {
+	private void prepareTexturedModel(TexturedModel model, EnumRenderCall renderCall) {
 		if(model == null || model.getRawModel() == null || model.getTexture() == null) {return;}
 		GL30.glBindVertexArray(model.getRawModel().getVaoID());
 		GL20.glEnableVertexAttribArray(VaoList.POSITIONS);
@@ -54,7 +54,7 @@ public class EntityRenderer {
 		shader.loadFakeLightningValue(texture.hasFakeLightning());
 		shader.loadShineVariables(texture.getShineDamper(), texture.getReflectivity());
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getTextureID());
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getTextureID(renderCall));
 	}
 	
 	private void unbindTexturedModel() {

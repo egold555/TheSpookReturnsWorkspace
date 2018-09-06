@@ -16,7 +16,7 @@ public class ModelTexture {
 		this.textureID = id;
 	}
 	
-	public int getTextureID() {
+	public int getTextureID(EnumRenderCall renderCall) {
 		return textureID;
 	}
 

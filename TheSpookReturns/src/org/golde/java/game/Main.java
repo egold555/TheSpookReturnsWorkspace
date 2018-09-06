@@ -251,15 +251,8 @@ public class Main {
 
 		entities.add(new EntityMagicCircle(loader, 0, -100, terrain1, 10));
 
-		entities.add(new EntityTV(loader, 50, -50, terrain1, 0.8f, "Noice.mp4")); // 0.8f Wrecked VHS.mp4
+		entities.add(new EntityTV(loader, 50, -50, terrain1, 0.8f, "NOICE.mp4")); // 0.8f Wrecked VHS.mp4
 
-
-
-		//Sort all registered Guis by Z index
-		Collections.sort(guis);
-
-		//entities.add(new EntityTV(loader, 50, -50, terrain1, 0.8f)); // 0.8f
-		entities.add(new EntityTV(loader, 50, -50, terrain1, 0.8f, "Wrecked VHS.mp4")); // 0.8f Wrecked VHS.mp4
 
 
 		//Lights
@@ -272,16 +265,19 @@ public class Main {
 		water.add(waterTile);
 
 
-//		GuiStaticTexture waterTestTextureReflection = new GuiStaticTexture(fbos.getReflectionTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
-//		GuiStaticTexture waterTestTextureRefraction = new GuiStaticTexture(fbos.getRefractionTexture(), new Vector2f(-0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
-//
-//		player.getGuiOverlay().addGuiTexture(waterTestTextureReflection);
-//		player.getGuiOverlay().addGuiTexture(waterTestTextureRefraction);
+		//		GuiStaticTexture waterTestTextureReflection = new GuiStaticTexture(fbos.getReflectionTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+		//		GuiStaticTexture waterTestTextureRefraction = new GuiStaticTexture(fbos.getRefractionTexture(), new Vector2f(-0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+		//
+		//		player.getGuiOverlay().addGuiTexture(waterTestTextureReflection);
+		//		player.getGuiOverlay().addGuiTexture(waterTestTextureRefraction);
 
 		//player.setHasGravity(false);
 
+		//Sort all registered Guis by Z index
+		Collections.sort(guis);
 		//Final
 		DisplayManager.aboutToStartGameLoop();
+
 
 		//Main Loop
 		while(!Display.isCloseRequested()) {
