@@ -14,6 +14,9 @@ public class Camera
 	private Matrix4f projectionViewMatrix;
 
 	private EntityPlayer player;
+	
+	private float yaw;
+	private float pitch;
 
 	public Camera(EntityPlayer player, Matrix4f projectionViewMatrix)
 	{
@@ -33,7 +36,7 @@ public class Camera
 
 	public float getPitch() 
 	{
-		return player.getRotY();
+		return pitch;
 	}
 
 	public void setPitch(float pitch) 
@@ -43,7 +46,7 @@ public class Camera
 	
 	public float getYaw()
 	{
-		return player.getRotX();
+		return yaw;
 	}
 
 	public void setYaw(float yaw)
@@ -54,8 +57,8 @@ public class Camera
 	private void mouseMovements()
 	{
 		if(Main.getGameState() != GameState.PLAYING) {return;}
-		float pitch = getPitch();
-		float yaw = getYaw();
+		pitch = player.getRotY();
+		yaw = player.getRotX();
 		
 		Mouse.setCursorPosition(Display.getWidth() / 2, Display.getHeight() / 2);
 		pitch -= Mouse.getDY() * sensitivity * DisplayManager.getFrameTimeSeconds();
@@ -72,6 +75,10 @@ public class Camera
 
 	public Matrix4f getProjectionViewMatrix() {
 		return projectionViewMatrix;
+	}
+
+	public void invertPitch() {
+		this.pitch = -this.pitch;
 	}
 
 }
