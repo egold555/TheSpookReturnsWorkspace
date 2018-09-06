@@ -1,7 +1,5 @@
 package org.golde.java.game.terrains;
 
-import java.util.Arrays;
-
 import org.golde.java.game.models.RawModel;
 import org.golde.java.game.renderEngine.Loader;
 import org.golde.java.game.textures.terrain.TerrainTexture;

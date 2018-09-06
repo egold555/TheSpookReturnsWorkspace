@@ -6,7 +6,6 @@ import org.golde.java.game.objects.base.colliders.CylinderCollider;
 import org.golde.java.game.objects.base.entities.Entity;
 import org.golde.java.game.objects.base.entities.EntityMoveable;
 import org.golde.java.game.objects.light.Light;
-import org.golde.java.game.objects.player.EntityPlayer;
 import org.golde.java.game.renderEngine.Loader;
 import org.golde.java.game.renderEngine.OBJLoader;
 import org.golde.java.game.renderEngine.particles.ParticleSystem;

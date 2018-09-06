@@ -1,7 +1,6 @@
 package org.golde.java.game.multiplayer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.golde.java.game.Main;

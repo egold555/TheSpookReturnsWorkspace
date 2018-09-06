@@ -1,8 +1,6 @@
 package org.golde.java.game.multiplayer;
 
 import org.golde.java.game.objects.base.entities.Entity;
-import org.golde.java.game.objects.light.EntityLamp;
-import org.golde.java.game.objects.terrain.plants.EntityTree;
 
 public class MPlayer {
 

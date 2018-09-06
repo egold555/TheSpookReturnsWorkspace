@@ -50,7 +50,6 @@ import org.golde.java.game.renderEngine.renderers.MasterRenderer;
 import org.golde.java.game.scheduler.Scheduler;
 import org.golde.java.game.terrains.HeightMapTerrain;
 import org.golde.java.game.terrains.Terrain;
-import org.golde.java.game.textures.gui.GuiStaticTexture;
 import org.golde.java.game.textures.particles.ParticleTexture;
 import org.golde.java.game.textures.terrain.TerrainTexture;
 import org.golde.java.game.textures.terrain.TerrainTexturePack;
@@ -62,7 +61,6 @@ import org.lwjgl.openal.AL11;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 import org.newdawn.slick.util.Log;
@@ -185,6 +183,7 @@ public class Main {
 
 		multiplayer = new Multiplayer();
 
+		@SuppressWarnings("unused")
 		RainMaker rainParticles = new RainMaker(new ParticleTexture(loader.loadTexture("particles/cosmic"), 4), 0.5f, 1000, 150, 5, 200, 100, -10);
 
 		//********TERRAIN TEXTURE STUFF*******
