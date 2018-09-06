@@ -6,6 +6,7 @@ import org.golde.java.game.helpers.Maths;
 import org.golde.java.game.models.RawModel;
 import org.golde.java.game.objects.player.Camera;
 import org.golde.java.game.objects.terrain.decoration.WaterTile;
+import org.golde.java.game.renderEngine.DisplayManager;
 import org.golde.java.game.renderEngine.Loader;
 import org.golde.java.game.renderEngine.VaoList;
 import org.golde.java.game.renderEngine.WaterFrameBuffers;
@@ -18,14 +19,19 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
 public class WaterRenderer {
-	 
+	
     private RawModel quad;
     private WaterShader shader;
     private WaterFrameBuffers fbos;
+    
+    private int dudvTexture;
+    private static final float WAVE_SPEED = 0.03f;
+    private float moveFactor = 0;
  
     public WaterRenderer(Loader loader, WaterShader shader, Matrix4f projectionMatrix, WaterFrameBuffers fbos) {
         this.shader = shader;
         this.fbos = fbos;
+        dudvTexture = loader.loadTexture("terrain/water/dudvMap");
         
         shader.start();
         shader.connectTextureUnits();
@@ -49,6 +55,11 @@ public class WaterRenderer {
     private void prepareRender(Camera camera){
         shader.start();
         shader.loadViewMatrix(camera);
+        
+        moveFactor += WAVE_SPEED * DisplayManager.getFrameTimeSeconds();
+        moveFactor%=1;
+        shader.loadMoveFactor(moveFactor);
+        
         GL30.glBindVertexArray(quad.getVaoID());
         GL20.glEnableVertexAttribArray(0);
         
@@ -56,6 +67,8 @@ public class WaterRenderer {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, fbos.getReflectionTexture());
         GL13.glActiveTexture(GL13.GL_TEXTURE1);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, fbos.getRefractionTexture());
+        GL13.glActiveTexture(GL13.GL_TEXTURE2);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, dudvTexture);
     }
      
     private void unbind(){

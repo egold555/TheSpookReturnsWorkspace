@@ -48,7 +48,6 @@ import org.golde.java.game.renderEngine.particles.RainMaker;
 import org.golde.java.game.renderEngine.renderers.GuiRenderer;
 import org.golde.java.game.renderEngine.renderers.MasterRenderer;
 import org.golde.java.game.scheduler.Scheduler;
-import org.golde.java.game.shaders.WaterShader;
 import org.golde.java.game.terrains.HeightMapTerrain;
 import org.golde.java.game.terrains.Terrain;
 import org.golde.java.game.textures.gui.GuiStaticTexture;
@@ -268,13 +267,13 @@ public class Main {
 		water.add(waterTile);
 
 
-		//		GuiStaticTexture waterTestTextureReflection = new GuiStaticTexture(fbos.getReflectionTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
-		//		GuiStaticTexture waterTestTextureRefraction = new GuiStaticTexture(fbos.getRefractionTexture(), new Vector2f(-0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
-		//		
-		//		player.getGuiOverlay().addGuiTexture(waterTestTextureReflection);
-		//		player.getGuiOverlay().addGuiTexture(waterTestTextureRefraction);
+				GuiStaticTexture waterTestTextureReflection = new GuiStaticTexture(fbos.getReflectionTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+				GuiStaticTexture waterTestTextureRefraction = new GuiStaticTexture(fbos.getRefractionTexture(), new Vector2f(-0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+				
+				player.getGuiOverlay().addGuiTexture(waterTestTextureReflection);
+				player.getGuiOverlay().addGuiTexture(waterTestTextureRefraction);
 
-		//player.setHasGravity(false);
+		player.setHasGravity(false);
 
 		//Final
 		DisplayManager.aboutToStartGameLoop();
