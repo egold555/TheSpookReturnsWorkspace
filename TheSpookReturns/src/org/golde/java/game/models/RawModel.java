@@ -17,5 +17,12 @@ public class RawModel {
 	public int getVertexCount() {
 		return vertexCount;
 	}
+
+	@Override
+	public String toString() {
+		return "RawModel [vaoID=" + vaoID + ", vertexCount=" + vertexCount + "]";
+	}
+	
+	
 	
 }

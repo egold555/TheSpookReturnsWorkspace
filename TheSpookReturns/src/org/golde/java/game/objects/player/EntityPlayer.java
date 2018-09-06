@@ -8,6 +8,7 @@ import org.golde.java.game.Main;
 import org.golde.java.game.audio.AudioMaster;
 import org.golde.java.game.audio.Source;
 import org.golde.java.game.gui.base.GuiText;
+import org.golde.java.game.gui.player.GuiFade;
 import org.golde.java.game.gui.player.GuiPlayerOverlay;
 import org.golde.java.game.helpers.BetterKeyboard;
 import org.golde.java.game.objects.base.colliders.Collider;
@@ -40,8 +41,10 @@ public class EntityPlayer extends EntityMoveable{
 	
 	private Light flashLight;
 	private boolean flashlightEnabled;
+	private GuiFade guiFade;
+	private boolean noclip = false;
 
-	public EntityPlayer(Loader loader, Vector3f position, float rotX, float rotY, float rotZ, float scale) {
+	public EntityPlayer(Loader loader, Vector3f position, float rotX, float rotY, float rotZ, float scale, GuiFade guiFade) {
 		super(null, position, rotX, rotY, rotZ, scale);
 		this.loader = loader;
 		sfx.setLooping(true);
@@ -67,6 +70,8 @@ public class EntityPlayer extends EntityMoveable{
 		
 		flashLight = new Light(position, new Vector3f(0, 0, 0), new Vector3f(0.5f, 0.001f, 0.0001f));
 		Main.getLights().add(flashLight);
+		
+		this.guiFade = guiFade;
 	}
 
 	boolean shouldUpdatePos = false;
@@ -150,7 +155,17 @@ public class EntityPlayer extends EntityMoveable{
 		super.setVelocity(velX, getVelocity().y, velZ);
 		
 		if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-			jump();
+			if(!noclip) {
+				jump();
+			} else {
+				addVelocity(0, 1, 0);
+			}
+		}
+		
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			if(noclip) {
+				addVelocity(0, -1, 0);
+			}
 		}
 
 		if(Mouse.isButtonDown(0)) {
@@ -174,6 +189,13 @@ public class EntityPlayer extends EntityMoveable{
 					inventory.set(selected, null);
 				}
 			}
+		}
+		
+		if(BetterKeyboard.wasKeyPressed(Keyboard.KEY_O)) {
+			getFader().fadeToBlack();
+		}
+		if(BetterKeyboard.wasKeyPressed(Keyboard.KEY_L)) {
+			getFader().fadeFromBlack();
 		}
 	}
 	
@@ -295,6 +317,19 @@ public class EntityPlayer extends EntityMoveable{
 	
 	Item getItemAt(int index) {
 		return getInventory().get(index);
+	}
+	
+	public GuiFade getFader() {
+		return guiFade;
+	}
+	
+	public void setNoclip(boolean noclip) {
+		this.noclip = noclip;
+		this.setHasGravity(!noclip);
+	}
+	
+	public boolean isNocliping() {
+		return noclip;
 	}
 
 }

@@ -29,5 +29,13 @@ public class TerrainTexturePack {
 	public TerrainTexture getbTexture() {
 		return bTexture;
 	}
+
+	@Override
+	public String toString() {
+		return "TerrainTexturePack [backgroundTexture=" + backgroundTexture + ", rTexture=" + rTexture + ", gTexture="
+				+ gTexture + ", bTexture=" + bTexture + "]";
+	}
+	
+	
 	
 }

@@ -3,6 +3,7 @@ package org.golde.java.game.terrains;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
@@ -104,5 +105,15 @@ public class HeightMapTerrain extends Terrain{
 		return height;
 		
 	}
+
+
+
+	@Override
+	public String toString() {
+		return "HeightMapTerrain [SIZE=" + SIZE + ", px=" + px + ", pz=" + pz + ", model=" + model + ", texturePack="
+				+ texturePack + ", blendMap=" + blendMap + "]";
+	}
+
+		
 	
 }

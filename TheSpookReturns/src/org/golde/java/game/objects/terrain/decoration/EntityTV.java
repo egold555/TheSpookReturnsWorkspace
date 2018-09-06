@@ -71,7 +71,7 @@ public class EntityTV extends Entity{
 		if(!mp.isPlaying() && isRunningAnimation == true) {
 			Main.getEntities().remove(tvScreen);
 			isRunningAnimation = false;
-			mp.resetToBeginning();
+			mp.resetToBeginning(); //can close before last frame is finished laying
 		}
 		super.onRender();
 	}

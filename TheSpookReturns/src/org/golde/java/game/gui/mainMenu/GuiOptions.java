@@ -67,4 +67,9 @@ public class GuiOptions extends Gui{
 		}
 	}
 	
+	@Override
+	public int getZIndex() {
+		return 1;
+	}
+	
 }

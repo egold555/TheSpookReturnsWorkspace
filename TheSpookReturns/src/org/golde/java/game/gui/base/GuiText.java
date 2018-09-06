@@ -225,5 +225,9 @@ public class GuiText extends Gui{
 		}
 		
 	}
+	
+	public void setPosition(Vector2f position) {
+		this.position = position;
+	}
 
 }

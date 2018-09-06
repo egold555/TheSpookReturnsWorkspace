@@ -21,7 +21,7 @@ public class GLog {
 	
 	public static void error(String msg) {
 		if(!ENABLED) {return;}
-		System.err.println("[WARNING]" + format(new Exception()) + msg);
+		System.err.println("[ERROR]" + format(new Exception()) + msg);
 	}
 	
 	public static void error(Exception e, String msg) {

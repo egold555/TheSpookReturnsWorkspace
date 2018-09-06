@@ -13,8 +13,13 @@ public class ModelMovieTexture extends ModelTexture{
 		
 		try {
 			mp = new MoviePlayer(movieFile);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			GLog.error("res/movies/" + movieFile + " Does not exist!");
+			try {
+				mp = new MoviePlayer("NULL.avi");
+			} catch (IOException e1) {
+				GLog.error(e1, "Default movie could not be loaded. Falling back to null! THIS IS BAD!");
+			}
 		}
 	}
 	

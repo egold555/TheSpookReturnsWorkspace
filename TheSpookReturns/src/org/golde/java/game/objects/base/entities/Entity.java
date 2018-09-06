@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.golde.java.game.GLog;
 import org.golde.java.game.Main;
 import org.golde.java.game.helpers.Maths;
 import org.golde.java.game.models.TexturedModel;
@@ -76,8 +77,10 @@ public class Entity {
 	public void addCollider(Collider collider) {
 		if (position != null) {
 			collider.scaleAndTranslate(this.getScale(), this.position.x, this.position.y, this.position.z);
+			GLog.info(getClass().getName() + " Adding Collider: " + collider.toString());
 		}
 		else {
+			GLog.info(getClass().getName() + " Collider position is null (0,0,0)");
 			collider.scaleAndTranslate(this.getScale(), 0, 0, 0);
 		}
 
@@ -204,4 +207,7 @@ public class Entity {
 	{
 		return Maths.createTransformationMatrix(getPosition(), getRotX(), getRotY(), getRotZ(), getScale());
 	}
+
+	
+	
 }

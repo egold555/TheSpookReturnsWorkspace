@@ -16,30 +16,39 @@ public class GuiDebug extends Gui{
 	private int renderTicks = 0;
 	
 	boolean isDebugEnabled = false;
+	boolean isHitboxesEnabled = false;
+	private final int TEXT_COUNT = 7;
 	
 	public GuiDebug(EntityPlayer player) {
 		this.player = player;
-		addText(new GuiText("", 1,  new Vector2f(0, 0), 1, false));
-		addText(new GuiText("", 1, new Vector2f(0, 0.03f), 1, false));
-		addText(new GuiText("", 1, new Vector2f(0, 0.06f), 1, false));
-		addText(new GuiText("", 1, new Vector2f(0, 0.09f), 1, false));
-		addText(new GuiText("FPS: Working on it...", 1, new Vector2f(0, 0.12f), 1, false));
-		addText(new GuiText("", 1, new Vector2f(0, 0.09f), 1, false));
+		float value = -0.03f;
+		for(int i = 0; i < TEXT_COUNT; i++) {
+			addText(new GuiText("", 1, new Vector2f(0, value += 0.03f), 1, false));
+		}
+		/*addText(new GuiText("", 1,  new Vector2f(0, value), 1, false));
+		addText(new GuiText("", 1, new Vector2f(0, value += 0.03f), 1, false));
+		addText(new GuiText("", 1, new Vector2f(0, value += 0.03f), 1, false));
+		addText(new GuiText("", 1, new Vector2f(0, value += 0.03f), 1, false));
+		addText(new GuiText("", 1, new Vector2f(0, value += 0.03f), 1, false));
+		addText(new GuiText("", 1, new Vector2f(0, value += 0.03f), 1, false));
+		addText(new GuiText("", 1, new Vector2f(0, value += 0.03f), 1, false));
+		addText(new GuiText("", 1, new Vector2f(0, value += 0.03f), 1, false));*/
 		
-		setVisible(isDebugEnabled);
-		Main.getRenderer().setRenderColliders(isDebugEnabled);
+		setVisible(false);
+		Main.getRenderer().setRenderColliders(false);
 		
 	}
 	
 	
 	@Override
 	public void onRender() {
-		
 		getTextsToBeRendered().get(0).setTextString("X: " + player.getPosition().x + " Y:" + player.getPosition().y + " Z: " + player.getPosition().z);
 		getTextsToBeRendered().get(1).setTextString("RX: " + player.getRotX() + " RY: " + player.getRotY() + " RZ: " + player.getRotZ());
 		getTextsToBeRendered().get(2).setTextString("Is Moving: " + player.isMoving());
-		getTextsToBeRendered().get(3).setTextString("Terrain: " + player.getTerrainCurrentlyStandingOn().toString().replace("org.golde.java.game.terrains.", ""));
+		
 		getTextsToBeRendered().get(3).setTextString("Inventory: " + toStringInventory());
+		getTextsToBeRendered().get(5).setTextString("FadeValue: " + player.getFader().getBrightness());
+		getTextsToBeRendered().get(6).setTextString("Terrain: " + player.getTerrainCurrentlyStandingOn().toString().replace("org.golde.java.game.terrains.", ""));
 		
 	}
 	
@@ -49,7 +58,12 @@ public class GuiDebug extends Gui{
 		if(BetterKeyboard.wasKeyPressed(Keyboard.KEY_F3)) {
 			isDebugEnabled = !isDebugEnabled;
 			setVisible(isDebugEnabled);
-			Main.getRenderer().setRenderColliders(isDebugEnabled);
+			
+		}
+		
+		if(BetterKeyboard.wasKeyPressed(Keyboard.KEY_F2)) {
+			isHitboxesEnabled = !isHitboxesEnabled;
+			Main.getRenderer().setRenderColliders(isHitboxesEnabled);
 		}
 		
 		if(renderTicks > 30) {
@@ -75,6 +89,11 @@ public class GuiDebug extends Gui{
 			
 		}
 		return s + "}";
+	}
+	
+	@Override
+	public int getZIndex() {
+		return 4;
 	}
 	
 }

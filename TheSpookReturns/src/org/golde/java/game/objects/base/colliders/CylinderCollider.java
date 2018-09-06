@@ -73,4 +73,11 @@ public class CylinderCollider extends Collider{
 		return bottomCenter.y + height;
 	}
 
+	@Override
+	public String toString() {
+		return "CylinderCollider [bottomCenter=" + bottomCenter + ", radius=" + radius + ", height=" + height
+				+ ", depth=" + depth + ", blocks=" + blocks + ", getBottom()=" + getBottom() + ", getTop()=" + getTop()
+				+ "]";
+	}
+	
 }

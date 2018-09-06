@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.golde.java.game.GLog;
 import org.golde.java.game.helpers.Maths;
 import org.golde.java.game.models.TexturedModel;
 import org.golde.java.game.multiplayer.MPlayer;
@@ -230,7 +231,9 @@ public class MasterRenderer {
 	
 	
 	public void cleanUp() {
+		GLog.info("  Cleanup: shaders");
 		staticShader.cleanUp();
+		GLog.info("Cleanup: terrain");
 		terrainShader.cleanUp();
 		waterShader.cleanUp();
 		

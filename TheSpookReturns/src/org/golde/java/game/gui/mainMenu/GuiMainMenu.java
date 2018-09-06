@@ -111,4 +111,9 @@ public class GuiMainMenu extends Gui{
 		}
 	}
 
+	@Override
+	public int getZIndex() {
+		return 0;
+	}
+
 }
