@@ -280,8 +280,8 @@ public class Main {
 		//		player.getGuiOverlay().addGuiTexture(waterTestTextureReflection);
 		//		player.getGuiOverlay().addGuiTexture(waterTestTextureRefraction);
 		
-		GuiStaticTexture shadoMapTextureTest = new GuiStaticTexture(renderer.getShadowMapTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
-		player.getGuiOverlay().addGuiTexture(shadoMapTextureTest);
+		//GuiStaticTexture shadoMapTextureTest = new GuiStaticTexture(renderer.getShadowMapTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+		//player.getGuiOverlay().addGuiTexture(shadoMapTextureTest);
 
 		//player.setHasGravity(false);
 
