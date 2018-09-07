@@ -32,8 +32,8 @@ import org.lwjgl.util.vector.Vector4f;
 
 public class MasterRenderer {
 
-	private static final float FOV = 70;
-	private static final float NEAR_PLANE = 0.1f;
+	public static final float FOV = 70;
+	public static final float NEAR_PLANE = 0.1f;
 	private static final float FAR_PLANE = 1000;
 	private Matrix4f projectionMatrix;
 	private static final float SKY_RED = 0.1f;
@@ -48,21 +48,23 @@ public class MasterRenderer {
 	private TerrainShader terrainShader = new TerrainShader();
 	private WaterShader waterShader = new WaterShader();
 	private WaterRenderer waterRenderer;
+	private ShadowMapMasterRenderer shadowMapMasterRenderer;
 	
 	private SkyboxRenderer skybox;
 	private Loader loader;
 	
 	private boolean renderColliders = false;
 	
-	public MasterRenderer(Loader loader, WaterFrameBuffers waterFbos) {
+	public MasterRenderer(Loader loader, WaterFrameBuffers waterFbos, Camera camera) {
 		enableCulling();
 		createProjectionMatrix();
 		entityRenderer = new EntityRenderer(staticShader, projectionMatrix);
 		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
 		skybox = new SkyboxRenderer(loader, projectionMatrix);
 		this.loader = loader;
-		
 		waterRenderer = new WaterRenderer(loader, waterShader, projectionMatrix, waterFbos);
+		shadowMapMasterRenderer = new ShadowMapMasterRenderer(camera);
+		
 	}
 	
 	private Map<TexturedModel, List<Entity>> entities = new HashMap<TexturedModel, List<Entity>>();
@@ -96,6 +98,10 @@ public class MasterRenderer {
 		}
 		
 		render(camera, lights, clipPlane, renderCall);
+		
+		terrains.clear();
+		entities.clear();
+		colliderEntities.clear();
 	}
 	
 	private void render(Camera camera, List<Light> lights, Vector4f clipPlane, EnumRenderCall renderCall) {
@@ -127,13 +133,19 @@ public class MasterRenderer {
 		
 		skybox.render(camera, renderCall);
 		
-		terrains.clear();
-		entities.clear();
-		colliderEntities.clear();
+		
 	}
 	
 	public void renderWater(List<WaterTile> water, Camera camera, Light sun) {
 		waterRenderer.render(water, camera, sun);
+	}
+	
+	public void renderShadowMap(List<Entity> entitiesIn, Light sunIn) {
+		for(Entity entity : entitiesIn) {
+			processEntity(entity);
+		}
+		shadowMapMasterRenderer.render(entities, sunIn);
+		entities.clear();
 	}
 	
 	private List<Light> sortLights(List<Light> lights, final Camera camera)
@@ -179,6 +191,9 @@ public class MasterRenderer {
 		}else {
 			List<Entity> newBatch = new ArrayList<Entity>();
 			newBatch.add(entity);
+			if(entityModel == null) {
+				return;
+			}
 			entities.put(entityModel, newBatch);
 		}
 		
@@ -235,12 +250,19 @@ public class MasterRenderer {
 		staticShader.cleanUp();
 		GLog.info("Cleanup: terrain");
 		terrainShader.cleanUp();
+		GLog.info("Cleanup: water");
 		waterShader.cleanUp();
+		GLog.info("Cleanup: shadows");
+		shadowMapMasterRenderer.cleanUp();
 		
 	}
 	
 	public Matrix4f getProjectionMatrix() {
 		return projectionMatrix;
+	}
+	
+	public int getShadowMapTexture() {
+		return shadowMapMasterRenderer.getShadowMap();
 	}
 	
 	public static enum EnumRenderCall {

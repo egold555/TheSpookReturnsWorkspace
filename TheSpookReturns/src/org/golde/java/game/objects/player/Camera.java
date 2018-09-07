@@ -11,17 +11,15 @@ import org.lwjgl.util.vector.Vector3f;
 public class Camera
 {
 	private float sensitivity = 10F;
-	private Matrix4f projectionViewMatrix;
 
 	private EntityPlayer player;
 	
 	private float yaw;
 	private float pitch;
 
-	public Camera(EntityPlayer player, Matrix4f projectionViewMatrix)
+	public Camera(EntityPlayer player)
 	{
 		this.player = player;
-		this.projectionViewMatrix = projectionViewMatrix;
 	}
 
 	public void movement()
@@ -71,10 +69,6 @@ public class Camera
 		setPitch(pitch);
 		
 		Mouse.setGrabbed(true);
-	}
-
-	public Matrix4f getProjectionViewMatrix() {
-		return projectionViewMatrix;
 	}
 
 	public void invertPitch() {

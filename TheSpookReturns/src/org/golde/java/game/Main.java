@@ -51,6 +51,7 @@ import org.golde.java.game.renderEngine.renderers.MasterRenderer.EnumRenderCall;
 import org.golde.java.game.scheduler.Scheduler;
 import org.golde.java.game.terrains.HeightMapTerrain;
 import org.golde.java.game.terrains.Terrain;
+import org.golde.java.game.textures.gui.GuiStaticTexture;
 import org.golde.java.game.textures.particles.ParticleTexture;
 import org.golde.java.game.textures.terrain.TerrainTexture;
 import org.golde.java.game.textures.terrain.TerrainTexturePack;
@@ -62,6 +63,7 @@ import org.lwjgl.openal.AL11;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 import org.newdawn.slick.util.Log;
@@ -165,23 +167,30 @@ public class Main {
 		FONT = new FontType(loader, "Verdana");
 		guiRenderer = new GuiRenderer(loader);
 		WaterFrameBuffers fbos = new WaterFrameBuffers();
-		renderer = new MasterRenderer(loader, fbos);
+		
 
 		Log.setLogSystem(new BlankLogger()); //Stop SlickUtil from logging pointless errors
 
 		AudioMaster.init();
 		AL10.alDistanceModel(AL11.AL_LINEAR_DISTANCE);
 
-		ParticleMaster.init(loader, renderer.getProjectionMatrix());
+		
 
 		//**********PLAYER***********
 		GuiFade guiFade = new GuiFade(loader);
 		guis.add(guiFade);
 		player = new EntityPlayer(loader, new Vector3f(0, 3, -34), 181.7f, 4, 0, 1, guiFade);
-		camera = new Camera(player, renderer.getProjectionMatrix());
+		camera = new Camera(player);
 		entities.add(player);
 		//***************************
-
+		if(camera == null) {
+			GLog.warning("Cam is null");
+			System.exit(-1);
+		}
+		renderer = new MasterRenderer(loader, fbos, camera);
+		
+		ParticleMaster.init(loader, renderer.getProjectionMatrix());
+		
 		multiplayer = new Multiplayer();
 
 		@SuppressWarnings("unused")
@@ -270,6 +279,9 @@ public class Main {
 		//
 		//		player.getGuiOverlay().addGuiTexture(waterTestTextureReflection);
 		//		player.getGuiOverlay().addGuiTexture(waterTestTextureRefraction);
+		
+		GuiStaticTexture shadoMapTextureTest = new GuiStaticTexture(renderer.getShadowMapTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+		player.getGuiOverlay().addGuiTexture(shadoMapTextureTest);
 
 		//player.setHasGravity(false);
 
@@ -342,6 +354,7 @@ public class Main {
 				//rainParticles.generateParticles(player.getPosition().x, player.getPosition().z);
 
 				//Game renderer
+				renderer.renderShadowMap(entities, sun);
 				GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
 				//TODO: Animated textures are 3x faster

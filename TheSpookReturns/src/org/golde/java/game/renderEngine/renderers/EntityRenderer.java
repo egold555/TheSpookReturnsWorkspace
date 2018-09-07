@@ -28,6 +28,9 @@ public class EntityRenderer {
 	
 	public void render(Map<TexturedModel, List<Entity>> entities, EnumRenderCall renderCall) {
 		for(TexturedModel model:entities.keySet()) {
+			if(model == null) {
+				continue;
+			}
 			prepareTexturedModel(model, renderCall);
 			List<Entity> batch = entities.get(model);
 			for(Entity entity:batch) {
