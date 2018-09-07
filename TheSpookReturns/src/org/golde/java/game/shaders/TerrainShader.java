@@ -35,6 +35,8 @@ public class TerrainShader extends ShaderProgram{
 	private int location_fogDensity;
 	private int location_fogGradient;
 	private int location_plane;
+	private int location_toShadowMapSpace;
+	private int location_shadowMap;
 	
 	public TerrainShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -63,6 +65,8 @@ public class TerrainShader extends ShaderProgram{
 		location_fogDensity = super.getUniformLocation("density");
 		location_fogGradient = super.getUniformLocation("gradient");
 		location_plane = super.getUniformLocation("plane");
+		location_toShadowMapSpace = super.getUniformLocation("toShadowMapSpace");
+		location_shadowMap = super.getUniformLocation("shadowMap");
 		
 		location_lightPos = new int[MAX_LIGHTS];
 		location_lightColor = new int[MAX_LIGHTS];
@@ -87,9 +91,12 @@ public class TerrainShader extends ShaderProgram{
 		super.loadInt(location_gTexture, 2);
 		super.loadInt(location_bTexture, 3);
 		super.loadInt(location_blendMap, 4);
+		super.loadInt(location_shadowMap, 5);
 	}
 	
-	
+	public void loadShadowSpaceMatrix(Matrix4f matrix) {
+		super.loadMatrix(location_toShadowMapSpace, matrix);
+	}
 	
 	public void loadSkyColor(float r, float g, float b) {
 		super.loadVector(location_skyColor, new Vector3f(r, g, b));

@@ -85,7 +85,7 @@ public class ModelAnimatedTexture extends ModelTexture{
 	}
 
 	@Override
-	public int getTextureID(EnumRenderCall renderCall) {
+	public int getTextureID() {
 		return currentFrame;
 	}
 

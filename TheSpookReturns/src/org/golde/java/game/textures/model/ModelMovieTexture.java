@@ -49,13 +49,19 @@ public class ModelMovieTexture extends ModelTexture{
 	}
 
 	@Override
-	public int getTextureID(EnumRenderCall renderCall) {
-		if(renderCall == EnumRenderCall.SCENE) {
+	public int getTextureID() {
+		//if(renderCall == EnumRenderCall.SCENE) {
 			mp.tick();
 			mp.syncTexture(5);
-		}
+		//}
 		return mp.textureHandle;
 	}
+	
+//	@Override
+//	public void onRender(EnumRenderCall renderCall) {
+//		mp.tick();
+//		mp.syncTexture(5);
+//	}
 
 	public void setPosition(Vector3f pos)
 	{

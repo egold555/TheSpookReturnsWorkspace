@@ -27,6 +27,7 @@ import org.golde.java.game.shaders.WaterShader;
 import org.golde.java.game.terrains.Terrain;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -128,7 +129,7 @@ public class MasterRenderer {
 		terrainShader.loadSkyColor(SKY_RED, SKY_GREEN, SKY_BLUE);
 		terrainShader.loadLights(sortLights(lights, camera));
 		terrainShader.loadViewMatrix(camera);
-		terrainRenderer.render(terrains, renderCall);
+		terrainRenderer.render(terrains, shadowMapMasterRenderer.getToShadowMapSpaceMatrix(), renderCall);
 		terrainShader.stop();
 		
 		skybox.render(camera, renderCall);
@@ -227,6 +228,8 @@ public class MasterRenderer {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT|GL11.GL_DEPTH_BUFFER_BIT);
 		GL11.glClearColor(SKY_RED, SKY_GREEN, SKY_BLUE, 1);
+		GL13.glActiveTexture(GL13.GL_TEXTURE5);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, getShadowMapTexture());
 	}
 	
 	private void createProjectionMatrix() {

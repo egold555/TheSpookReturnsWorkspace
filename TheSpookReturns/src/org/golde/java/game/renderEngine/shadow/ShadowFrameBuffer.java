@@ -14,7 +14,6 @@ import org.lwjgl.opengl.GL32;
  * which can be rendered to during the shadow render pass, producing a shadow
  * map.
  * 
- * @author Karl
  *
  */
 public class ShadowFrameBuffer {

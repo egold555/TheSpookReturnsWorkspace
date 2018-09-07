@@ -18,7 +18,6 @@ import org.lwjgl.util.vector.Vector4f;
  * rendered to the shadow map in the shadow render pass. Everything outside the
  * area won't be.
  * 
- * @author Karl
  *
  */
 public class ShadowBox {
@@ -26,7 +25,7 @@ public class ShadowBox {
 	private static final float OFFSET = 10;
 	private static final Vector4f UP = new Vector4f(0, 1, 0, 0);
 	private static final Vector4f FORWARD = new Vector4f(0, 0, -1, 0);
-	private static final float SHADOW_DISTANCE = 100;
+	private static final float SHADOW_DISTANCE = 150;
 
 	private float minX, maxX;
 	private float minY, maxY;
