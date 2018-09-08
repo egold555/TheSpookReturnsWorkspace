@@ -3,7 +3,6 @@ package org.golde.java.game.renderEngine.renderers;
 import java.util.List;
 import java.util.Map;
 
-import org.golde.java.game.GLog;
 import org.golde.java.game.helpers.Maths;
 import org.golde.java.game.models.RawModel;
 import org.golde.java.game.models.TexturedModel;

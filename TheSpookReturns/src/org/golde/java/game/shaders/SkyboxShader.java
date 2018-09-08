@@ -6,8 +6,8 @@ import org.lwjgl.util.vector.Matrix4f;
 
 public class SkyboxShader extends ShaderProgram{
 	 
-    private static final String VERTEX_FILE = PACKAGE + "skyboxVertexShader.txt";
-    private static final String FRAGMENT_FILE = PACKAGE + "skyboxFragmentShader.txt";
+    private static final String VERTEX_FILE = "skyboxVertexShader";
+    private static final String FRAGMENT_FILE = "skyboxFragmentShader";
      
     private int location_projectionMatrix;
     private int location_viewMatrix;

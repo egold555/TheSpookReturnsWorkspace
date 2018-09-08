@@ -13,8 +13,8 @@ import org.lwjgl.util.vector.Vector4f;
 public class TerrainShader extends ShaderProgram{
 	private static final int MAX_LIGHTS = 8;
 
-	private static final String VERTEX_FILE = "src/org/golde/java/game/shaders/terrainVertexShader.txt";
-	private static final String FRAGMENT_FILE = "src/org/golde/java/game/shaders/terrainFragmentShader.txt";
+	private static final String VERTEX_FILE = "terrainVertexShader";
+	private static final String FRAGMENT_FILE = "terrainFragmentShader";
 	private int location_transformationMatrix;
 	private int location_projectionMatrix;
 	private int location_viewMatrix;

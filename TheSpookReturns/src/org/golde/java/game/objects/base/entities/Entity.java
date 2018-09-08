@@ -7,7 +7,6 @@ import java.util.Random;
 import org.golde.java.game.GLog;
 import org.golde.java.game.Main;
 import org.golde.java.game.helpers.Maths;
-import org.golde.java.game.models.RawModel;
 import org.golde.java.game.models.TexturedModel;
 import org.golde.java.game.objects.base.behavior.Behavior;
 import org.golde.java.game.objects.base.colliders.Collider;

@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.golde.java.game.GLog;
 import org.golde.java.game.helpers.movieplayer.MoviePlayer;
-import org.golde.java.game.renderEngine.renderers.MasterRenderer.EnumRenderCall;
 import org.lwjgl.util.vector.Vector3f;
 
 public class ModelMovieTexture extends ModelTexture{
